@@ -1,0 +1,17 @@
+<div class="accordion-item"
+  [attr.aria-expanded]="data?.expanded?.toString()">
+  <div class="accordion-header"
+    role="button"
+    [attr.aria-controls]="'accordion-content-' + data?.accordion_id"
+    [attr.aria-expanded]="data?.expanded?.toString()" tabindex="0">
+    <p>{{ data?.heading }}</p>
+  </div>
+  <div class="accordion-container"
+    role="region"
+    [id]="'accordion-content-' + data?.accordion_id"
+    [attr.aria-labelledby]="'accordion-header-' + data?.accordion_id">
+    <div class="accordion-content">
+      {{ data?.content }}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<button class="button"
+  [className]="'button'+ data?.button_class"
+  [id]="data?.button_id"
+  [type]="data?.type"
+  (click)="handleClick()">
+  <label class="button_label" [for]="'button' + data?.label">
+    {{data?.label}}
+  </label>
+</button>
