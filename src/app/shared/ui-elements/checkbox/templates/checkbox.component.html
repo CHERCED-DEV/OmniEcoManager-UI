@@ -1,0 +1,14 @@
+<div class="checkbox">
+    <label class="checkbox_label" 
+        [for]="data?.label">
+        <input class="checkbox_input" 
+            [type]="data?.type" 
+            [id]="data?.checkbox_id" 
+            [name]="data?.name" 
+            [attr.aria-labelledby]="data?.label" />
+        <span class="checkbox_span"
+            [id]="'span-'+data?.label">
+            {{data?.label}}
+        </span>
+    </label>
+</div>

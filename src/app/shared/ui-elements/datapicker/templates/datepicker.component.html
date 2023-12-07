@@ -1,0 +1,9 @@
+<div class="datapicker">
+    <label class="datapicker_label" 
+        [for]="data?.datapicker_id">{{data?.label}}</label>
+    <input class="datapicker_input" 
+        [type]="data?.type" 
+        [id]="data?.datapicker_id" 
+        [name]="data?.label" 
+        [attr.aria-labelledby]="data?.label"/>
+</div>

@@ -2,9 +2,7 @@ import { Component, Input, EventEmitter } from '@angular/core';
 import { ButtonConfig } from '../../../main/core/types/interfaces/ui-elements.interface';
 
 @Component({
-  selector: 'app-button',
-  standalone: true,
-  imports: [],
+  selector: 'ui-button',
   templateUrl: './templates/button.component.html',
   styleUrl: './templates/button.component.scss'
 })
