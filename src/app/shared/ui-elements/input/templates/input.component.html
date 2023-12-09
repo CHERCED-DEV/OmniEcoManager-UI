@@ -1,0 +1,23 @@
+<div class="input-container"
+  [class.has-error]="hasError"
+  [class.has-value]="hasValue"
+  [class.on-focus]="isFocused">
+  <label class="input_label"
+    *ngIf="label"
+    [for]="inputId">
+      {{ label }}
+  </label>
+  <input
+    [type]="text"
+    [id]="inputId"
+    [placeholder]="placeholder"
+    [value]="value"
+    [disabled]="disabled"
+    [attr.aria-labelledby]="label ? inputId : null"
+    (blur)="onBlur()"
+    (focus)="onFocus()"
+    (input)="valueChange.emit($event.target.value)"
+  />
+  <div *ngIf="hasError" class="error-message">{{ errorMessage }}</div>
+</div>
+
