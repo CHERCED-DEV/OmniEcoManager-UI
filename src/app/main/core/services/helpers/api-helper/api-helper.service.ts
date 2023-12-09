@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { HttpsRequests } from '../../../types/enums/validation_types.enum';
+import { environment } from '../../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -9,9 +11,9 @@ export class ApiHelperService {
   constructor(private httpClient: HttpClient) { }
 
   request(
-    method: string,
+    method: HttpsRequests,
     url: string,
-    token: string | null = null,
+    token: string = environment.token,
     content_type: string = 'application/json',
     body?: any
   ): Observable<any> {

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { FooterConfig } from '../../../core/types/interfaces/common.interface';
 
 @Component({
-  selector: 'app-footer-container',
+  selector: 'app-footer',
   templateUrl: './templates/footer-container.component.html',
   styleUrl: './/templates/footer-container.component.scss'
 })
 export class FooterContainerComponent {
-
+  @Input() static_content!: FooterConfig;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InputRegexType } from '../../../types/enums/validationTypes.enum';
+import { InputRegexType } from '../../../types/enums/validation_types.enum';
 import { ApiHelperService } from '../../helpers/api-helper/api-helper.service';
 
 @Injectable({
@@ -11,6 +11,7 @@ export class ValidationService {
   constructor(private apiHelper: ApiHelperService) {
 
   }
+
   private regexPatterns: { [key in InputRegexType]: RegExp } = {
     [InputRegexType.EMAIL]: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
     [InputRegexType.PASSWORD]: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
@@ -37,8 +38,6 @@ export class ValidationService {
     [InputRegexType.POSTCODE]: { min: 5, max: 50 },
     [InputRegexType.URL]: { min: 5, max: 50 },
   };
-
-  constructor() { }
 
   getRegex(type: InputRegexType): RegExp | undefined {
     return this.regexPatterns[type];

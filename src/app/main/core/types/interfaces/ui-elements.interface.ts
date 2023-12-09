@@ -31,8 +31,18 @@ export interface InputConfig {
   label: string;
   placeholder: string;
   value: string;
-  type: 'text' | 'password' | 'email' |   'number' |
+  type: 'text' | 'password' | 'email' | 'number' |
   'date' | 'range' | 'hidden' | 'file' | 'color';
   disable: boolean;
   error_menssage: boolean;
+}
+
+export interface LinkConfig {
+  href: string;
+  label: string;
+}
+
+export interface ImgsSimpleConfig {
+  src: string;
+  alt: string;
 }

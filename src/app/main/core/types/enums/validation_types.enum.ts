@@ -6,3 +6,11 @@ export enum InputRegexType {
   POSTCODE = 'post_code',
   URL = 'url'
 }
+
+export enum HttpsRequests {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  PATCH = 'PATCH',
+}
