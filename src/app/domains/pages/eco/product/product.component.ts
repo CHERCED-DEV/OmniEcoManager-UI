@@ -3,9 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-product',
-  standalone: true,
-  imports: [],
   templateUrl: './product.component.html',
+  standalone: true,
+  providers: [ActivatedRoute],
   styleUrl: './product.component.scss'
 })
 export class ProductComponent {

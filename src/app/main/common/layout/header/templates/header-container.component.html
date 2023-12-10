@@ -1,5 +1,50 @@
-<header *ngIf="static_content">
-    
+<!-- app-overlay-menu -->
+<ng-container *ngIf="isMobile">
+    <app-overlay-menu 
+        [navigationRoutes]="navigationRoutes"
+        [isOpenMenu]="toogleMenu$"    >
+    </app-overlay-menu>
+</ng-container>
+
+<!-- main-header-component -->
+<header *ngIf="static_content" class="header">
+    <div class="header__logo">
+        <img class="header__logo-img" 
+            [src]="static_content.brand_logo.src" 
+            [alt]="static_content.brand_logo.alt"
+        >
+    </div>
+    <nav class="header__nav">
+        <ul class="header__nav-list">
+            <ng-container *ngIf="navigationRoutes">
+                <li class="header__nav-item" 
+                    *ngFor="let route of navigationRoutes">
+                    <a class="header__nav-link" [routerLink]="[route.path]">
+                        {{ route.label }}
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+    </nav>
+    <div class="header__actions-container">
+        <div class="header__button">
+            <button class="header__button-action" 
+                (click)="toggleMenu()"
+                [attr.aria-label]="'header menu'">
+                <i class="header__button-icon fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <ng-container *ngIf="cultures">
+            <ul class="header__culture-list">
+                <li class="header__culture-list-item" 
+                    *ngFor="let culture of cultures">
+                    {{ culture }}
+                </li>
+            </ul>
+        </ng-container>
+        <ng-container *ngIf="!isMobile">
+           <!--  <app-user-panel>
+            </app-user-panel> -->
+        </ng-container>
+    </div>
 </header>
-<app-alert></app-alert>
-<app-overlay-menu></app-overlay-menu>

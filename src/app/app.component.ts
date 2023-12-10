@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { LayoutModule } from './main/common/layout/layout.module';
 import { CommonService } from './main/core/services/server/common/common.service';
 import { FooterConfig, HeaderConfig, StarterConfig } from './main/core/types/interfaces/common.interface';
@@ -11,12 +11,21 @@ import { SharedModule } from './main/shared/shared.module';
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
+    RouterOutlet,
     LayoutModule,
     SharedModule],
   providers: [CommonService],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  template: `
+  <div class="page-wrap">
+    <app-header 
+      [static_content]="header">
+    </app-header>
+        <router-outlet>
+        </router-outlet>
+    <app-footer 
+      [static_content]="footer">
+    </app-footer>
+  </div>`
 })
 export class AppComponent {
   public header: HeaderConfig;

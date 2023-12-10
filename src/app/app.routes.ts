@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { AboutComponent } from './pages/about/about.component';
-import { ConfirmationComponent } from './pages/eco/confirmation/confirmation.component';
-import { EcoComponent } from './pages/eco/eco.component';
-import { PaymentComponent } from './pages/eco/payment/payment.component';
-import { ProductComponent } from './pages/eco/product/product.component';
-import { ServiceComponent } from './pages/eco/service/service.component';
-import { HomeComponent } from './pages/home/home.component';
+import { AboutComponent } from './domains/pages/about/about.component';
+import { ConfirmationComponent } from './domains/pages/eco/confirmation/confirmation.component';
+import { EcoComponent } from './domains/pages/eco/eco.component';
+import { PaymentComponent } from './domains/pages/eco/payment/payment.component';
+import { ProductComponent } from './domains/pages/eco/product/product.component';
+import { ServiceComponent } from './domains/pages/eco/service/service.component';
+import { HomeComponent } from './domains/pages/home/home.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -21,5 +21,5 @@ export const routes: Routes = [
       // Puedes agregar más rutas anidadas según sea necesario
     ]
   },
-  { path: '**', redirectTo: '/home', pathMatch: 'full' }
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

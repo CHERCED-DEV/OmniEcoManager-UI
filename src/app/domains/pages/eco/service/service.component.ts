@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-service',
+  standalone: true,
+  providers: [ActivatedRoute],
   templateUrl: './service.component.html',
   styleUrl: './service.component.scss'
 })
