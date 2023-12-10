@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LayoutModule } from './main/common/layout/layout.module';
-import { SharedModule } from './shared/shared.module';
 import { CommonService } from './main/core/services/server/common/common.service';
-import { HeaderConfig, FooterConfig, StarterConfig } from './main/core/types/interfaces/common.interface';
+import { FooterConfig, HeaderConfig, StarterConfig } from './main/core/types/interfaces/common.interface';
+import { SharedModule } from './main/shared/shared.module';
 
 @Component({
   selector: 'app-root',
