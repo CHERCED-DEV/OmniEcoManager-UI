@@ -7,7 +7,8 @@ import { RoutesMenuNavConfig } from '../../../types/interfaces/actions.interface
 })
 export class NavigationService {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) { 
+  }
 
   getRoutesWithoutCurrentRoute(currentRoute: string): RoutesMenuNavConfig[] {
     return this.router.config
@@ -15,6 +16,7 @@ export class NavigationService {
       .map((route) => ({
         path: route.path,
         label: route.path === '' ? 'home' : route.path,
+        children: route.children
       })) as RoutesMenuNavConfig[];
   }
 }

@@ -29,9 +29,10 @@ export class HeaderContainerComponent {
       if (event instanceof NavigationEnd) {
         const currentUrl: string = event.url.split('/')[1];
         this.navigationRoutes = this.navigationService.getRoutesWithoutCurrentRoute(currentUrl);
+        console.log(this.navigationRoutes)
       }
     });
-
+    
     this.itsMobileScreen();
     // to get the intial value from menu mobile
     this.toogleMenu$.subscribe((isOpen: boolean) => {

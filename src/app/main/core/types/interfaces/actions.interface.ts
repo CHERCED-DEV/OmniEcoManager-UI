@@ -1,4 +1,9 @@
 export interface RoutesMenuNavConfig {
-    path: string;
-    label: string;
-  }
+  path: string;
+  label: string;
+  children: [
+    {
+      path: string;
+    }
+  ]
+}
