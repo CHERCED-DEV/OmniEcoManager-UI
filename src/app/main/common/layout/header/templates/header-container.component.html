@@ -22,6 +22,13 @@
                     <a class="header__nav-link" [routerLink]="[route.path]">
                         {{ route.label }}
                     </a>
+                    <ul>
+                        <li *ngFor="let children of route.children">
+                            <a [routerLink]="route.path+'/'+children.path">
+                                {{children.path}}
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ng-container>
         </ul>
