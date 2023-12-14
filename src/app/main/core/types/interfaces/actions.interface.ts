@@ -1,7 +1,7 @@
 export interface RoutesMenuNavConfig {
   path: string;
   label: string;
-  children: [
+  childs: [
     {
       path: string;
     }

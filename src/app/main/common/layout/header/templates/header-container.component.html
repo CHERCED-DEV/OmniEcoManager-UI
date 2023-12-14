@@ -23,7 +23,7 @@
                         {{ route.label }}
                     </a>
                     <ul>
-                        <li *ngFor="let children of route.children">
+                        <li *ngFor="let children of route.childs">
                             <a [routerLink]="route.path+'/'+children.path">
                                 {{children.path}}
                             </a>

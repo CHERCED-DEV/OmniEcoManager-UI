@@ -15,7 +15,7 @@ export class HeaderContainerComponent {
   private toogleMenuSubject = new BehaviorSubject<boolean>(false);
   public toogleMenu$: Observable<boolean> = this.toogleMenuSubject.asObservable();
 
-  navigationRoutes: RoutesMenuNavConfig[] = [];
+  navigationRoutes: any[] = [];
   isMobile: boolean = false;
   mobileWidth: number = 768;
   isOpenMenu: boolean = false;
