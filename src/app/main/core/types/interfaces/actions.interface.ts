@@ -1,9 +1,10 @@
 export interface RoutesMenuNavConfig {
   path: string;
   label: string;
-  childs: [
+  children: [
     {
       path: string;
+      label: string;
     }
-  ]
+  ] | undefined
 }

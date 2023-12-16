@@ -15,7 +15,7 @@ export class HeaderContainerComponent {
   private toogleMenuSubject = new BehaviorSubject<boolean>(false);
   public toogleMenu$: Observable<boolean> = this.toogleMenuSubject.asObservable();
 
-  navigationRoutes: any[] = [];
+  navigationRoutes: RoutesMenuNavConfig[] = [];
   isMobile: boolean = false;
   mobileWidth: number = 768;
   isOpenMenu: boolean = false;
@@ -31,7 +31,7 @@ export class HeaderContainerComponent {
         this.navigationRoutes = this.navigationService.getRoutesWithoutCurrentRoute(currentUrl);
         console.log(this.navigationRoutes)
       }
-    });
+    }); 
     
     this.itsMobileScreen();
     // to get the intial value from menu mobile

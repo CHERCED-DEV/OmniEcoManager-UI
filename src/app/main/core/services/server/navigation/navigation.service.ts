@@ -1,44 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Router, Route, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { Route, Router, Routes } from '@angular/router';
 import { RoutesMenuNavConfig } from '../../../types/interfaces/actions.interface';
-
-interface ExtendedRoute extends Route {
-  _loadedRoutes?: [{ children: any }];
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavigationService {
-
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      console.log(this.getAllRoutes(this.router.config));
-    });
+  constructor(private router: Router) {
+    console.log(this.getAllRoutes())
   }
 
-  getRoutesWithoutCurrentRoute(currentRoute: string): any[] {
-    const allRoutes: ExtendedRoute[] = this.getAllRoutes(this.router.config);
-    return allRoutes
-      .filter((route) => route.path !== currentRoute)
+  getAllRoutes(): Route[] {
+    return this.router.config
+      .filter((route) => !route?.path?.includes('**'))
       .map((route) => ({
         path: route.path,
         label: route.path === '' ? 'home' : route.path,
-        childs: route._loadedRoutes ? route._loadedRoutes[0].children : []
-      }));
+        children: route.children ? route.children.map(((child)=> ({
+          path: child.path,
+          label: child.path
+        }))) : undefined
+      })) as RoutesMenuNavConfig[];
   }
 
-  private getAllRoutes(routes: ExtendedRoute[]): ExtendedRoute[] {
-    return routes.reduce((all, route) => {
-      if (route._loadedRoutes) {
-        // If the route has lazy-loaded children, recursively fetch their routes
-        return [...all, route, ...this.getAllRoutes(route._loadedRoutes[0].children)];
-      } else {
-        return [...all, route];
-      }
-    }, [] as ExtendedRoute[]);
+  getRoutesWithoutCurrentRoute(currentRoute: string): RoutesMenuNavConfig[] {
+    return this.getAllRoutes().filter((route) => route.path !== currentRoute) as RoutesMenuNavConfig[];
   }
 }

@@ -23,9 +23,9 @@
                         {{ route.label }}
                     </a>
                     <ul>
-                        <li *ngFor="let children of route.childs">
-                            <a [routerLink]="route.path+'/'+children.path">
-                                {{children.path}}
+                        <li *ngFor="let child of route.children">
+                            <a [routerLink]="route.path+'/'+child.path">
+                                {{child.path}}
                             </a>
                         </li>
                     </ul>
