@@ -1,5 +1,5 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NavigationService } from '../../../core/services/server/navigation/navigation.service';
 import { RoutesMenuNavConfig } from '../../../core/types/interfaces/actions.interface';
@@ -21,18 +21,11 @@ export class HeaderContainerComponent {
   isOpenMenu: boolean = false;
   cultures: string[] | null = null;
 
-  constructor(private navigationService: NavigationService, private router: Router) { }
+  constructor(private navigationService: NavigationService, private router: Router) {
+    this.navigationRoutes = this.navigationService.getAllRoutes()
+  }
 
   ngOnInit(): void {
-    //  to listen wich routes did you have with out current route
-    this.router.events.subscribe((event: any) => {
-      if (event instanceof NavigationEnd) {
-        const currentUrl: string = event.url.split('/')[1];
-        this.navigationRoutes = this.navigationService.getRoutesWithoutCurrentRoute(currentUrl);
-        console.log(this.navigationRoutes)
-      }
-    }); 
-    
     this.itsMobileScreen();
     // to get the intial value from menu mobile
     this.toogleMenu$.subscribe((isOpen: boolean) => {

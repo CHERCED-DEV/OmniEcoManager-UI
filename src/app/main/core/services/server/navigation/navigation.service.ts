@@ -6,17 +6,15 @@ import { RoutesMenuNavConfig } from '../../../types/interfaces/actions.interface
   providedIn: 'root'
 })
 export class NavigationService {
-  constructor(private router: Router) {
-    console.log(this.getAllRoutes())
-  }
+  constructor(private router: Router) { }
 
-  getAllRoutes(): Route[] {
+  getAllRoutes(): RoutesMenuNavConfig[] {
     return this.router.config
       .filter((route) => !route?.path?.includes('**'))
       .map((route) => ({
         path: route.path,
         label: route.path === '' ? 'home' : route.path,
-        children: route.children ? route.children.map(((child)=> ({
+        children: route.children ? route.children.map(((child) => ({
           path: child.path,
           label: child.path
         }))) : undefined
