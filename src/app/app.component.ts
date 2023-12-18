@@ -42,7 +42,7 @@ export class AppComponent {
     this.header = this.commonService.layout.header;
     this.footer = this.commonService.layout.footer;
 
-    console.log(this.inputsValidationService.getRegex());
-    console.log(this.inputsValidationService.getInputHelperTexts());
+    /* console.log(this.inputsValidationService.getRegex());
+    console.log(this.inputsValidationService.getInputHelperTexts()); */
   }
 }

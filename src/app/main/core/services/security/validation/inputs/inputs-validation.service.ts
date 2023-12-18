@@ -28,11 +28,11 @@ export class InputsValidationService {
     if (commonData) {
       const { error_messages, regex }: CommonApiConfig = commonData;
       this.error_messages = error_messages;
-      this.regex = this.convertStringRegexToObject(regex);
+      //this.regex = this.convertStringRegexToObject(regex);
     }
   }
 
-  private convertStringRegexToObject(regexConfig: RegexInputConfigs): RegexInputConfigs {
+  /* private convertStringRegexToObject(regexConfig: RegexInputConfigs): RegexInputConfigs {
     const convertedRegex: RegexInputConfigs = {} as RegexInputConfigs;
     Object.keys(regexConfig).forEach((key: any) => {
       if (KeyInputConfig[key as keyof typeof KeyInputConfig]) {
@@ -47,7 +47,7 @@ export class InputsValidationService {
       }
     })
     return convertedRegex;
-  }
+  } */
 
   getRegex(): RegexInputConfigs {
     return this.regex;
