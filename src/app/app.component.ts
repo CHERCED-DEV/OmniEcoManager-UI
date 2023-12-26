@@ -6,6 +6,8 @@ import { InputsValidationService } from './main/core/services/security/validatio
 import { CommonService } from './main/core/services/server/common/common.service';
 import { FooterConfig, HeaderConfig, StarterConfig } from './main/core/types/interfaces/common.interface';
 import { SharedModule } from './main/shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from './main/core/services/helpers/translation.service';
 
 @Component({
   selector: 'app-root',
@@ -13,9 +15,10 @@ import { SharedModule } from './main/shared/shared.module';
   imports: [
     CommonModule,
     RouterOutlet,
+    TranslateModule,
     LayoutModule,
     SharedModule],
-  providers: [CommonService, InputsValidationService],
+  providers: [CommonService, LanguageService, InputsValidationService],
   template: `
   <div class="page-wrap">
     <app-header

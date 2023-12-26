@@ -11,7 +11,7 @@ import { StorageHelperService } from '../../helpers/storage-helper/storage-helpe
   providedIn: 'root'
 })
 export class CommonService {
-  private commonSessionStorage: CommonConfig;
+  private commonSessionStorage: LayoutConfig;
 
   public layout: LayoutConfig = {} as LayoutConfig;
   public regex: string[] = [];
@@ -32,9 +32,9 @@ export class CommonService {
 
   private inicializate() {
     this.apiService.request(HttpsRequests.GET, environment.commonApi)
-    .subscribe(({ data: { attributes } }: CommonApiResponse) => {
-        this.storageHelperService.setSessionStorage(StorageApiKeys.COMMON, attributes);
-        this.createObjects(attributes)
+    .subscribe((data: LayoutConfig ) => {
+        this.storageHelperService.setSessionStorage(StorageApiKeys.COMMON, data);
+        this.createObjects(data)
       },
       (error) => {
         console.error(error);
@@ -42,9 +42,13 @@ export class CommonService {
     );
   }
 
-  private createObjects(call: CommonConfig) {
-    this.layout = call.layout;
-    this.regex = call.regex;
-    this.error_menssages = call.error_messages
+  private createObjects(call: LayoutConfig) {
+    this.layout = {
+      header: call.header,
+      footer: call.footer,
+      starter: call.starter    
+    };
+    //this.regex = call.regex;
+    //this.error_menssages = call.error_messages
   }
 }
