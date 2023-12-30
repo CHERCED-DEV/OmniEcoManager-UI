@@ -10,7 +10,7 @@ interface ImageFormat {
     url: string;
 }
 
-interface ImageAttributes {
+export interface ImageAttributes {
     name: string;
     alternativeText: string | null;
     caption: string | null;
@@ -32,15 +32,4 @@ interface ImageAttributes {
     provider_metadata: any | null;
     createdAt: string;
     updatedAt: string;
-}
-
-interface ImageData {
-    id: number;
-    attributes: ImageAttributes;
-}
-
-export interface ImgConfig {
-    [key: string]: {
-        data: ImageData;
-    };
 }

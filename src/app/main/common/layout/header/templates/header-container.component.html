@@ -10,8 +10,8 @@
 <header *ngIf="static_content" class="header">
     <div class="header__logo">
         <img class="header__logo-img" 
-            [src]="static_content.brand_logo.src" 
-            [alt]="static_content.brand_logo.alt"
+            [src]="CDN+static_content.brand_logo.url" 
+            [alt]="static_content.brand_logo.alternativeText"
         >
     </div>
     <nav class="header__nav">
@@ -22,9 +22,11 @@
                     <a class="header__nav-link" [routerLink]="[route.path]">
                         {{ route.label }}
                     </a>
-                    <ul>
-                        <li *ngFor="let child of route.children">
-                            <a [routerLink]="route.path+'/'+child.path">
+                    <ul class="header__subnav-list">
+                        <li class="header__subnav-item" 
+                            *ngFor="let child of route.children">
+                            <a class="header__subnav-link" 
+                            [routerLink]="route.path+'/'+child.path">
                                 {{child.path}}
                             </a>
                         </li>

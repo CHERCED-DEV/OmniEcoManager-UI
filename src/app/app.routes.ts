@@ -130,8 +130,7 @@ export const routes: Routes = [
         benefits: {
           title: 'Benefits',
           description: 'Explore the benefits available to members.'
-        },
-        favorites: {
+        }, favorites: {
           title: 'Favorites',
           description: 'View your favorite content.'
         },
@@ -139,14 +138,14 @@ export const routes: Routes = [
           title: 'Inbox',
           description: 'View your messages and notifications.'
         },
-        'my-events': {
+        my_events: {
           title: 'My Events',
           description: 'View and manage your events.'
         },
         subscriptions: {
           title: 'Subscriptions',
           description: 'Manage your subscriptions.'
-        }
+        },
       }
     },
     children: [

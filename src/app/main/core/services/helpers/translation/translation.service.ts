@@ -7,7 +7,7 @@ import { filter } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class LanguageService {
+export class TranslationService {
   constructor(private translate: TranslateService, private router: Router, private route: ActivatedRoute) {
     this.initLanguage();
 

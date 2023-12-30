@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-eco',
+  selector: 'eco-page',
   standalone: true,
   imports: [RouterOutlet],
   templateUrl: './eco.component.html',

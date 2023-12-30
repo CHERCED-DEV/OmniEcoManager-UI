@@ -7,7 +7,7 @@ import { CommonService } from './main/core/services/server/common/common.service
 import { FooterConfig, HeaderConfig, StarterConfig } from './main/core/types/interfaces/common.interface';
 import { SharedModule } from './main/shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { LanguageService } from './main/core/services/helpers/translation.service';
+import { TranslationService } from './main/core/services/helpers/translation/translation.service';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,7 @@ import { LanguageService } from './main/core/services/helpers/translation.servic
     TranslateModule,
     LayoutModule,
     SharedModule],
-  providers: [CommonService, LanguageService, InputsValidationService],
+  providers: [CommonService, TranslationService, InputsValidationService],
   template: `
   <div class="page-wrap">
     <app-header
@@ -34,18 +34,10 @@ import { LanguageService } from './main/core/services/helpers/translation.servic
 export class AppComponent {
   public header: HeaderConfig;
   public footer: FooterConfig;
-  public starter: StarterConfig;
-
   constructor(
     private commonService: CommonService,
-    //temporal to probe:
-    private inputsValidationService: InputsValidationService
   ) {
-    this.starter = this.commonService.layout.starter;
     this.header = this.commonService.layout.header;
     this.footer = this.commonService.layout.footer;
-
-    /* console.log(this.inputsValidationService.getRegex());
-    console.log(this.inputsValidationService.getInputHelperTexts()); */
   }
 }

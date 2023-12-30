@@ -1,4 +1,5 @@
 import { CommonInputType, KeyInputConfig } from "../enums/validation_types.enum";
+import { ImageAttributes } from "./strapiCallers/strapi.entities.interface";
 import {
   ButtonConfig,
   ImgsSimpleConfig,
@@ -34,17 +35,28 @@ interface NewsLetterConfig {
   button: ButtonConfig;
 }
 
+type inputsRegexsConfig = {
+  [key in KeyInputConfig]: string;
+}
+
+type inputsTypesConfig = {
+  [key in CommonInputType]: string;
+}
+
+
 
 // molecules
-
+export interface ErrorMessagesInputConfig extends inputsTypesConfig {
+}
+export interface RegexInputConfigs extends inputsRegexsConfig {
+}
 export interface HeaderConfig {
-  brand_logo: ImgsSimpleConfig;
+  brand_logo: ImageAttributes;
   search: SearchConfig;
   alerts: AlertConfig[];
 }
-
 export interface FooterConfig {
-  brand_logo: ImgsSimpleConfig;
+  brand_logo: ImageAttributes;
   newsletter: NewsLetterConfig;
   socialmedia: SocialMediaConfig[];
   copyright: CopyrightConfig;
@@ -55,23 +67,10 @@ export interface StarterConfig {
   message: string;
 }
 
+//organism
 export interface LayoutConfig {
   header: HeaderConfig;
   footer: FooterConfig;
-  starter: StarterConfig;
-}
-
-type inputsRegexsConfig = {
-  [key in KeyInputConfig]: string;
-}
-
-type inputsTypesConfig = {
-  [key in CommonInputType]: string;
-}
-
-export interface ErrorMessagesInputConfig extends inputsTypesConfig {
-}
-export interface RegexInputConfigs extends inputsRegexsConfig {
 }
 
 export interface CommonApiConfig {

@@ -1,9 +1,9 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NavigationService } from '../../../core/services/server/navigation/navigation.service';
 import { RoutesMenuNavConfig } from '../../../core/types/interfaces/actions.interface';
 import { HeaderConfig } from '../../../core/types/interfaces/common.interface';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -15,14 +15,16 @@ export class HeaderContainerComponent {
   private toogleMenuSubject = new BehaviorSubject<boolean>(false);
   public toogleMenu$: Observable<boolean> = this.toogleMenuSubject.asObservable();
 
+  CDN: string;
   navigationRoutes: RoutesMenuNavConfig[] = [];
   isMobile: boolean = false;
   mobileWidth: number = 768;
   isOpenMenu: boolean = false;
   cultures: string[] | null = null;
 
-  constructor(private navigationService: NavigationService, private router: Router) {
+  constructor(private navigationService: NavigationService) {
     this.navigationRoutes = this.navigationService.getAllRoutes()
+    this.CDN = environment.strapiCDN;
   }
 
   ngOnInit(): void {
