@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   providedIn: 'root'
 })
 export class CultureService {
-  private currentLang: string = 'en';
+  public currentLang: string = 'en';
   public cultures: string[] = ['es', 'en', 'fr'];
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) { }
@@ -18,13 +18,11 @@ export class CultureService {
     this.currentLang = lang;
 
     // Construye el dominio con la cultura y navega a la nueva URL
-    const url = this.router.createUrlTree([], {
+    this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams: { lang: this.currentLang },
       queryParamsHandling: 'merge'
-    }).toString();
-
-    this.router.navigateByUrl(url, { replaceUrl: true });
+    });
   }
 
   setLangFromUrl(): void {

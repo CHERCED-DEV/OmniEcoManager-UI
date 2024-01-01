@@ -6,7 +6,9 @@ import { RoutesMenuNavConfig } from '../../../types/interfaces/actions.interface
   providedIn: 'root'
 })
 export class NavigationService {
-  constructor(private router: Router) { }
+  constructor(private router: Router) { 
+    console.log(router)
+  }
 
   getAllRoutes(): RoutesMenuNavConfig[] {
     return this.router.config

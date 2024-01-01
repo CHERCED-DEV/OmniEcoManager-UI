@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Resolve } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
 import { CultureService } from '../culture.service';
 
 @Injectable()
 export class CultureResolver implements Resolve<void> {
     constructor(private cultureService: CultureService) { }
 
-    resolve(): void {
-        this.cultureService.setLangFromUrl();
-        return;
+    resolve(route: ActivatedRouteSnapshot): void {
+        const langFromUrl = route.paramMap.get('lang');
+
+        if (langFromUrl && this.cultureService.cultures.includes(langFromUrl)) {
+            this.cultureService.currentLang = langFromUrl;
+        } else {
+            this.cultureService.currentLang = 'en';
+        }
     }
 }
