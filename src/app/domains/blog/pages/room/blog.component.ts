@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-blog',
+  selector: 'blog-page',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './blog.component.html',
-  styleUrl: './blog.component.scss'
+  templateUrl: './templates/blog.component.html',
+  styleUrl: './templates/blog.component.scss'
 })
 export class BlogComponent {
 

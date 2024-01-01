@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-inbox',
+  selector: 'inbox-page',
   standalone: true,
   imports: [],
-  templateUrl: './inbox.component.html',
-  styleUrl: './inbox.component.scss'
+  templateUrl: './templates/inbox.component.html',
+  styleUrl: './templates/inbox.component.scss'
 })
 export class InboxComponent {
 

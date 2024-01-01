@@ -5,8 +5,8 @@ import { RouterOutlet } from '@angular/router';
   selector: 'eco-page',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './eco.component.html',
-  styleUrl: './eco.component.scss'
+  templateUrl: './templates/eco.component.html',
+  styleUrl: './templates/eco.component.scss'
 })
 export class EcoComponent {
 

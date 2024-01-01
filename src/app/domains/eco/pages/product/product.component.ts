@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'page-product',
-  templateUrl: './product.component.html',
+  selector: 'product-page',
   standalone: true,
   providers: [],
-  styleUrl: './product.component.scss'
+  templateUrl: './templates/product.component.html',
+  styleUrl: './templates/product.component.scss'
 })
 export class ProductComponent {
   productId: string = "oe basico";

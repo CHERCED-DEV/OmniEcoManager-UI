@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-favorites',
+  selector: 'favorites-page',
   standalone: true,
   imports: [],
-  templateUrl: './favorites.component.html',
-  styleUrl: './favorites.component.scss'
+  templateUrl: './templates/favorites.component.html',
+  styleUrl: './templates/favorites.component.scss'
 })
 export class FavoritesComponent {
 

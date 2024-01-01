@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-post',
+  selector: 'post-page',
   standalone: true,
   imports: [],
-  templateUrl: './post.component.html',
-  styleUrl: './post.component.scss'
+  templateUrl: './templates/post.component.html',
+  styleUrl: './templates/post.component.scss'
 })
 export class PostComponent {
 

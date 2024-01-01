@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-benefits',
+  selector: 'benefits-page',
   standalone: true,
   imports: [],
-  templateUrl: './benefits.component.html',
-  styleUrl: './benefits.component.scss'
+  templateUrl: './templates/benefits.component.html',
+  styleUrl: './templates/benefits.component.scss'
 })
 export class BenefitsComponent {
 
