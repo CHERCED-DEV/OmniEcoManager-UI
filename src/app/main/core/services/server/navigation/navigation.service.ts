@@ -1,26 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Route, Router, Routes } from '@angular/router';
-import { RoutesMenuNavConfig } from '../../../types/interfaces/actions.interface';
+import { Router } from '@angular/router';
+import { NodeMenuNavConfig, RoutesMenuNavConfig } from '../../../types/interfaces/actions.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavigationService {
-  constructor(private router: Router) { 
+  constructor(private router: Router) {
     console.log(router)
   }
 
   getAllRoutes(): RoutesMenuNavConfig[] {
-    return this.router.config
-      .filter((route) => !route?.path?.includes('**'))
-      .map((route) => ({
-        path: route.path,
-        label: route.path === '' ? 'home' : route.path,
-        children: route.children ? route.children.map(((child) => ({
-          path: child.path,
-          label: child.path
-        }))) : undefined
-      })) as RoutesMenuNavConfig[];
+    const nodesConfig: NodeMenuNavConfig[] = this.router.config.filter((nodes) => !nodes?.path?.includes('**')) as NodeMenuNavConfig[];
+    return nodesConfig.flatMap((node) => node.children || []);
   }
 
   getRoutesWithoutCurrentRoute(currentRoute: string): RoutesMenuNavConfig[] {

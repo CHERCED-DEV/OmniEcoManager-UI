@@ -8,3 +8,8 @@ export interface RoutesMenuNavConfig {
     }
   ] | undefined
 }
+
+export interface NodeMenuNavConfig {
+  path: string,
+  children: RoutesMenuNavConfig[];
+}

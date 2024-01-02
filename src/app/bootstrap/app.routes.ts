@@ -10,9 +10,6 @@ export const routes: Routes = [
     },
     children: [
       {
-        resolve: {
-          culture: CultureResolver,
-        },
         path: 'home',
         loadComponent: () => import('../domains/info/pages/room/home.component').then(m => m.HomeComponent),
         data: {
@@ -49,9 +46,6 @@ export const routes: Routes = [
         ],
       },
       {
-        resolve: {
-          culture: CultureResolver,
-        },
         path: 'blog',
         loadComponent: () => import('../domains/blog/pages/room/blog.component').then(m => m.BlogComponent),
         data: {
@@ -80,9 +74,6 @@ export const routes: Routes = [
         ],
       },
       {
-        resolve: {
-          culture: CultureResolver,
-        },
         path: 'eco',
         loadComponent: () => import('../domains/eco/pages/room/eco.component').then(m => m.EcoComponent),
         data: {
@@ -127,9 +118,6 @@ export const routes: Routes = [
         ],
       },
       {
-        resolve: {
-          culture: CultureResolver,
-        },
         path: 'members',
         loadComponent: () => import('../domains/members/pages/room/dash-board.component').then(m => m.DashBoardComponent),
         data: {

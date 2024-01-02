@@ -29,6 +29,7 @@ export class HeaderContainerComponent {
 
   ngOnInit(): void {
     this.itsMobileScreen();
+    console.log(this.navigationRoutes)
     // to get the intial value from menu mobile
     this.toogleMenu$.subscribe((isOpen: boolean) => {
       this.isOpenMenu = isOpen;

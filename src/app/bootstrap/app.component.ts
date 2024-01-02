@@ -33,13 +33,16 @@ import { SharedModule } from '../main/shared/shared.module';
   </div>`
 })
 export class AppComponent {
-  public header: HeaderConfig;
-  public footer: FooterConfig;
+  public header!: HeaderConfig;
+  public footer!: FooterConfig;
   constructor(
     private commonService: CommonService,
     private cultureService: CultureService
   ) {
     this.cultureService.setLang(this.cultureService.cultures[1]);
+    this.layoutDataBinding();    
+  }
+  private layoutDataBinding(){
     this.header = this.commonService.layout.header;
     this.footer = this.commonService.layout.footer;
   }
