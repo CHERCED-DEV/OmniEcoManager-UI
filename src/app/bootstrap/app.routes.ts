@@ -5,9 +5,6 @@ import { CultureResolver } from '../main/core/services/helpers/culture/resolver/
 export const routes: Routes = [
   {
     path: ':lang',
-    resolve: {
-      culture: CultureResolver,
-    },
     children: [
       {
         path: 'home',

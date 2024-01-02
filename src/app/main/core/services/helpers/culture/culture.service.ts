@@ -1,26 +1,38 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Observable, Subject, filter } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CultureService {
-  public currentLang: string = 'en';
+  private currentLangSubject = new Subject<string>();
+  public currentLang$ = this.currentLangSubject.asObservable();
   public cultures: string[] = ['es', 'en', 'fr'];
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) { }
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute) {
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.setLangFromUrl();
+    });
+  }
 
-  getLang(): string {
-    return this.currentLang;
+  createCulture() {
+    if (this.getLang() === undefined) {
+      this.setLang(this.cultures[1]);
+    }
+  }
+
+  getLang(): Observable<string> {
+    return this.currentLang$;
   }
 
   setLang(lang: string): void {
-    this.currentLang = lang;
-
-    // Construye el dominio con la cultura y navega a la nueva URL
-    this.router.navigate([], {
+    this.currentLangSubject.next(lang);
+    this.router.navigate([lang], {
       relativeTo: this.activatedRoute,
-      queryParams: { lang: this.currentLang },
       queryParamsHandling: 'merge'
     });
   }
@@ -28,7 +40,7 @@ export class CultureService {
   setLangFromUrl(): void {
     const langFromUrl = this.activatedRoute.snapshot.paramMap.get('lang');
     if (langFromUrl && this.cultures.includes(langFromUrl)) {
-      this.currentLang = langFromUrl;
+      this.currentLangSubject.next(langFromUrl);
     }
   }
 }

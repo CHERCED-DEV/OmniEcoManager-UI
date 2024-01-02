@@ -7,12 +7,13 @@ export class CultureResolver implements Resolve<void> {
     constructor(private cultureService: CultureService) { }
 
     resolve(route: ActivatedRouteSnapshot): void {
-        const langFromUrl = route.paramMap.get('lang');
-
-        if (langFromUrl && this.cultureService.cultures.includes(langFromUrl)) {
-            this.cultureService.currentLang = langFromUrl;
+        console.log(route);
+        const paramsFromUrl = route.params;
+        const { lang } = paramsFromUrl
+        /* if (lang && this.cultureService.cultures.includes(lang)) {
+            this.cultureService.currentLang = lang;
         } else {
             this.cultureService.currentLang = 'en';
-        }
+        } */
     }
 }
