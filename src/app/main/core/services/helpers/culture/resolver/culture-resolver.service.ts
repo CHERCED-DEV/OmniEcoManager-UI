@@ -10,10 +10,12 @@ export class CultureResolver implements Resolve<void> {
         console.log(route);
         const paramsFromUrl = route.params;
         const { lang } = paramsFromUrl
-        /* if (lang && this.cultureService.cultures.includes(lang)) {
-            this.cultureService.currentLang = lang;
+        if (lang && this.cultureService.cultures.includes(lang)) {
+            this.cultureService.setLang(lang)
         } else {
-            this.cultureService.currentLang = 'en';
-        } */
+        this.cultureService.getLang().subscribe((lang)=> {
+            this.cultureService.setLang(lang)
+        })
+        }
     }
 }
