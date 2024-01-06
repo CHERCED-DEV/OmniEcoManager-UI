@@ -7,38 +7,34 @@ import { BehaviorSubject, Observable, Subject, filter } from 'rxjs';
 })
 export class CultureService {
   public cultures: string[] = ['es', 'en', 'fr'];
-  private currentLangSubject = new BehaviorSubject<string>('en');
-  public currentLang$ = this.currentLangSubject.asObservable();
-  
+  private currentLangSubject = new BehaviorSubject<string>('');
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute) {
   }
 
-  getLang(): Observable<string> {
-    return this.currentLang$;
+  cultureListener(): Observable<string> {
+    return this.currentLangSubject.asObservable();
+  }
+
+  getLang(): string {
+    return this.currentLangSubject.getValue();
   }
 
   setLang(lang: string): void {
     this.currentLangSubject.next(lang);
-    this.router.navigate([lang], {
+  }
+
+  updateLang(lang: string) {
+    const currentUrl = this.router.url; // Obtiene la URL actual
+    const currentLang = this.getLang();
+    const newUrl = currentUrl.replace(`/${currentLang}`, `/${lang}`);
+    this.setLang(lang);
+    this.router.navigate([newUrl], {
       relativeTo: this.activatedRoute,
       queryParamsHandling: 'merge'
     });
   }
 
-  setLangFromUrl(): void {
-    const langFromUrl = this.activatedRoute.snapshot.paramMap.get('lang');
-    if (langFromUrl && this.cultures.includes(langFromUrl)) {
-      this.currentLangSubject.next(langFromUrl);
-    } else {
-      let currentLang: string = '';
-      this.currentLangSubject.subscribe((lang) => {
-        currentLang = lang
-      });
-      if(currentLang !== '') {
-        this.setLang(currentLang);
-      }
-    }
-  }
 }

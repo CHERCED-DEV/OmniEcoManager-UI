@@ -3,6 +3,7 @@ import { RoutesMenuNavConfig } from '../../../../../core/types/interfaces/action
 import { Observable } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { NavigationService } from '../../../../../core/services/server/navigation/navigation.service';
+import { CultureService } from '../../../../../core/services/helpers/culture/culture.service';
 
 @Component({
   selector: 'app-overlay-menu',
@@ -13,11 +14,14 @@ export class OverlayMenuComponent {
   @Input() navigationRoutes: RoutesMenuNavConfig[] = [];
   @Input() isOpenMenu!: Observable<boolean>;
 
-  constructor(private router: Router, private navigationService: NavigationService) {
+  constructor(private router: Router,
+    private navigationService: NavigationService,
+    private cultureService: CultureService
+  ) {
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
         const currentUrl: string = event.url.split('/')[1];
-        this.navigationRoutes = this.navigationService.getRoutesWithoutCurrentRoute(currentUrl);
+        this.navigationRoutes = this.navigationService.getRoutesWithoutCurrentRoute(currentUrl, this.cultureService.getLang());
       }
     });
   }

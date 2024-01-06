@@ -3,12 +3,10 @@ import { PreloadAllModules, provideRouter, withComponentInputBinding, withPreloa
 
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
-import { routes } from '../app.routes';
-import { CultureResolver } from '../../main/core/services/helpers/culture/resolver/culture-resolver.service';
+import { routes } from '../routes/app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    CultureResolver,  
+  providers: [  
     provideRouter(
       routes, 
       withComponentInputBinding(), 

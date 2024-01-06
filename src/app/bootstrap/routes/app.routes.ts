@@ -1,14 +1,22 @@
 import { Routes } from '@angular/router';
-import { NotFoundComponent } from '../domains/info/pages/not-found/not-found.component';
-import { CultureResolver } from '../main/core/services/helpers/culture/resolver/culture-resolver.service';
+import { NotFoundComponent } from '../../domains/info/pages/not-found/not-found.component';
+import { CultureResolver } from '../../main/core/services/helpers/culture/resolver/culture-resolver.service';
 
 export const routes: Routes = [
+  {
+    path: ':lang',
+    redirectTo: ':lang/home',
+    pathMatch: 'full',
+    resolve: {
+      culture: CultureResolver,
+    },
+  },
   {
     path: ':lang',
     children: [
       {
         path: 'home',
-        loadComponent: () => import('../domains/info/pages/room/home.component').then(m => m.HomeComponent),
+        loadComponent: () => import('../../domains/info/pages/room/home.component').then(m => m.HomeComponent),
         data: {
           title: 'Home',
           description: 'Welcome to the Home page!',
@@ -30,21 +38,21 @@ export const routes: Routes = [
         children: [
           {
             path: 'about',
-            loadComponent: () => import('../domains/info/pages/about/about.component').then(m => m.AboutComponent),
+            loadComponent: () => import('../../domains/info/pages/about/about.component').then(m => m.AboutComponent),
           },
           {
             path: 'faq',
-            loadComponent: () => import('../domains/info/pages/faq/faq.component').then(m => m.FaqComponent),
+            loadComponent: () => import('../../domains/info/pages/faq/faq.component').then(m => m.FaqComponent),
           },
           {
             path: 'terms',
-            loadComponent: () => import('../domains/info/pages/terms/terms.component').then(m => m.TermsComponent),
+            loadComponent: () => import('../../domains/info/pages/terms/terms.component').then(m => m.TermsComponent),
           },
         ],
       },
       {
         path: 'blog',
-        loadComponent: () => import('../domains/blog/pages/room/blog.component').then(m => m.BlogComponent),
+        loadComponent: () => import('../../domains/blog/pages/room/blog.component').then(m => m.BlogComponent),
         data: {
           title: 'Blog',
           description: 'Explore our blog content.',
@@ -62,17 +70,17 @@ export const routes: Routes = [
         children: [
           {
             path: 'thread',
-            loadComponent: () => import('../domains/blog/pages/thread/thread.component').then(m => m.ThreadComponent),
+            loadComponent: () => import('../../domains/blog/pages/thread/thread.component').then(m => m.ThreadComponent),
           },
           {
             path: 'post/:id',
-            loadComponent: () => import('../domains/blog/pages/post/post.component').then(m => m.PostComponent),
+            loadComponent: () => import('../../domains/blog/pages/post/post.component').then(m => m.PostComponent),
           },
         ],
       },
       {
         path: 'eco',
-        loadComponent: () => import('../domains/eco/pages/room/eco.component').then(m => m.EcoComponent),
+        loadComponent: () => import('../../domains/eco/pages/room/eco.component').then(m => m.EcoComponent),
         data: {
           title: 'Eco',
           description: 'Explore our eco-friendly offerings.',
@@ -98,25 +106,25 @@ export const routes: Routes = [
         children: [
           {
             path: 'service/:id',
-            loadComponent: () => import('../domains/eco/pages/service/service.component').then(m => m.ServiceComponent),
+            loadComponent: () => import('../../domains/eco/pages/service/service.component').then(m => m.ServiceComponent),
           },
           {
             path: 'product/:id',
-            loadComponent: () => import('../domains/eco/pages/product/product.component').then(m => m.ProductComponent),
+            loadComponent: () => import('../../domains/eco/pages/product/product.component').then(m => m.ProductComponent),
           },
           {
             path: 'payment',
-            loadComponent: () => import('../domains/eco/pages/payment/payment.component').then(m => m.PaymentComponent),
+            loadComponent: () => import('../../domains/eco/pages/payment/payment.component').then(m => m.PaymentComponent),
           },
           {
             path: 'confirmation',
-            loadComponent: () => import('../domains/eco/pages/confirmation/confirmation.component').then(m => m.ConfirmationComponent),
+            loadComponent: () => import('../../domains/eco/pages/confirmation/confirmation.component').then(m => m.ConfirmationComponent),
           },
         ],
       },
       {
         path: 'members',
-        loadComponent: () => import('../domains/members/pages/room/dash-board.component').then(m => m.DashBoardComponent),
+        loadComponent: () => import('../../domains/members/pages/room/dash-board.component').then(m => m.DashBoardComponent),
         data: {
           title: 'Members',
           description: 'Welcome to the Members area!',
@@ -146,23 +154,23 @@ export const routes: Routes = [
         children: [
           {
             path: 'benefits',
-            loadComponent: () => import('../domains/members/pages/benefits/benefits.component').then(m => m.BenefitsComponent),
+            loadComponent: () => import('../../domains/members/pages/benefits/benefits.component').then(m => m.BenefitsComponent),
           },
           {
             path: 'favorites',
-            loadComponent: () => import('../domains/members/pages/favorites/favorites.component').then(m => m.FavoritesComponent),
+            loadComponent: () => import('../../domains/members/pages/favorites/favorites.component').then(m => m.FavoritesComponent),
           },
           {
             path: 'inbox',
-            loadComponent: () => import('../domains/members/pages/inbox/inbox.component').then(m => m.InboxComponent),
+            loadComponent: () => import('../../domains/members/pages/inbox/inbox.component').then(m => m.InboxComponent),
           },
           {
             path: 'my-events',
-            loadComponent: () => import('../domains/members/pages/my-events/my-events.component').then(m => m.MyEventsComponent),
+            loadComponent: () => import('../../domains/members/pages/my-events/my-events.component').then(m => m.MyEventsComponent),
           },
           {
             path: 'subscriptions',
-            loadComponent: () => import('../domains/members/pages/subscriptions/subscriptions.component').then(m => m.SubscriptionsComponent),
+            loadComponent: () => import('../../domains/members/pages/subscriptions/subscriptions.component').then(m => m.SubscriptionsComponent),
           },
         ],
       },

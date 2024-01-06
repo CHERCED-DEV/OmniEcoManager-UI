@@ -47,7 +47,10 @@
             <ul class="header__culture-list">
                 <li class="header__culture-list-item" 
                     *ngFor="let culture of cultures">
-                    {{ culture }}
+                    <button class="header__button-culture" 
+                        (click)="changeCulture(culture)">
+                        {{ culture }}
+                    </button>
                 </li>
             </ul>
         </ng-container>

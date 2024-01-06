@@ -1,9 +1,10 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, SimpleChanges } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NavigationService } from '../../../core/services/server/navigation/navigation.service';
 import { RoutesMenuNavConfig } from '../../../core/types/interfaces/actions.interface';
 import { HeaderConfig } from '../../../core/types/interfaces/common.interface';
 import { environment } from '../../../../../environments/environment';
+import { CultureService } from '../../../core/services/helpers/culture/culture.service';
 
 @Component({
   selector: 'app-header',
@@ -22,17 +23,35 @@ export class HeaderContainerComponent {
   isOpenMenu: boolean = false;
   cultures: string[] | null = null;
 
-  constructor(private navigationService: NavigationService) {
-    this.navigationRoutes = this.navigationService.getAllRoutes()
+  constructor(
+    private navigationService: NavigationService,
+    private cultureService: CultureService) {
     this.CDN = environment.strapiCDN;
+    this.navigationRoutes = this.navigationService.getAllRoutes(this.cultureService.getLang());
+    
   }
 
   ngOnInit(): void {
-    this.itsMobileScreen();
-    console.log(this.navigationRoutes)
+    this.internalInit();
     // to get the intial value from menu mobile
     this.toogleMenu$.subscribe((isOpen: boolean) => {
       this.isOpenMenu = isOpen;
+    });
+  }
+
+  private internalInit() {
+    this.itsMobileScreen();
+    this.buildCultures();
+    this.cultureOnChanges();
+  }
+
+  private buildCultures() {
+    this.cultures = this.cultureService.cultures;
+  }
+
+  private cultureOnChanges(){
+    this.cultureService.cultureListener().subscribe((newCulture: string) => {
+      this.navigationRoutes = this.navigationService.getAllRoutes(newCulture);
     });
   }
 
@@ -49,6 +68,10 @@ export class HeaderContainerComponent {
     if (typeof window !== 'undefined') {
       this.isMobile = window.innerWidth <= this.mobileWidth;
     }
+  }
+
+  public changeCulture(culture: string) {
+    this.cultureService.updateLang(culture);
   }
 
   //to rebuild the mobile var

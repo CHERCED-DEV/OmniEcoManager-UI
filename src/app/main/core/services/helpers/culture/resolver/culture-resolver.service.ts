@@ -13,9 +13,9 @@ export class CultureResolver implements Resolve<void> {
         if (lang && this.cultureService.cultures.includes(lang)) {
             this.cultureService.setLang(lang)
         } else {
-        this.cultureService.getLang().subscribe((lang)=> {
-            this.cultureService.setLang(lang)
-        })
+            this.cultureService.cultureListener().subscribe((lang: string) => {
+                this.cultureService.updateLang(lang)
+            })
         }
     }
 }

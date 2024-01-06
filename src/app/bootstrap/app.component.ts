@@ -39,15 +39,14 @@ export class AppComponent {
     private commonService: CommonService,
     private cultureService: CultureService
   ) {
+    this.cultureService.updateLang(this.cultureService.cultures[1]);
   }
-    
+
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
-    this.layoutDataBinding();    
-  
+    this.layoutDataBinding();
   }
-  private layoutDataBinding(){
+
+  private layoutDataBinding() {
     this.header = this.commonService.layout.header;
     this.footer = this.commonService.layout.footer;
   }
