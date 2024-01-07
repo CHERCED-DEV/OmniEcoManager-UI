@@ -78,3 +78,8 @@ export interface CommonApiConfig {
   error_messages: ErrorMessagesInputConfig
   regex: RegexInputConfigs;
 }
+
+export interface CultureSessionConfig {
+  value: string;
+  init: boolean;
+}

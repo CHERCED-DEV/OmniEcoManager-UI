@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, filter } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { StorageHelperService } from '../storage-helper/storage-helper.service';
+import { StorageServiceKey } from '../../../types/enums/storage.keys';
+import { CultureSessionConfig } from '../../../types/interfaces/common.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -8,10 +11,24 @@ import { BehaviorSubject, Observable, Subject, filter } from 'rxjs';
 export class CultureService {
   public cultures: string[] = ['es', 'en', 'fr'];
   private currentLangSubject = new BehaviorSubject<string>('');
+  private cultureStorage: CultureSessionConfig;
 
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    private storageHelperService: StorageHelperService) {
+    this.cultureStorage = this.storageHelperService.getSessionStorage(StorageServiceKey.CULTURE);
+    this.cultureListener().subscribe((culture) => {
+      if (culture !== '') {
+        const options: CultureSessionConfig = {
+          value: culture,
+          init: true
+        }
+        this.storageHelperService.setSessionStorage(StorageServiceKey.CULTURE, options);
+      } else {
+        this.setLang(this.cultureStorage.value)
+      }
+    })
   }
 
   cultureListener(): Observable<string> {
@@ -22,7 +39,7 @@ export class CultureService {
     return this.currentLangSubject.getValue();
   }
 
-  setLang(lang: string): void {
+  private setLang(lang: string): void {
     this.currentLangSubject.next(lang);
   }
 

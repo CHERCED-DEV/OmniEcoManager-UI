@@ -7,8 +7,10 @@ import { CultureService } from '../main/core/services/helpers/culture/culture.se
 import { TranslationService } from '../main/core/services/helpers/translation/translation.service';
 import { InputsValidationService } from '../main/core/services/security/validation/inputs/inputs-validation.service';
 import { CommonService } from '../main/core/services/server/common/common.service';
-import { FooterConfig, HeaderConfig } from '../main/core/types/interfaces/common.interface';
+import { CultureSessionConfig, FooterConfig, HeaderConfig } from '../main/core/types/interfaces/common.interface';
 import { SharedModule } from '../main/shared/shared.module';
+import { StorageHelperService } from '../main/core/services/helpers/storage-helper/storage-helper.service';
+import { StorageServiceKey } from '../main/core/types/enums/storage.keys';
 
 @Component({
   selector: 'app-root',
@@ -33,14 +35,27 @@ import { SharedModule } from '../main/shared/shared.module';
   </div>`
 })
 export class AppComponent {
+  public cultureInit!: CultureSessionConfig;
   public header!: HeaderConfig;
   public footer!: FooterConfig;
   constructor(
     private commonService: CommonService,
-    private cultureService: CultureService
+    private cultureService: CultureService,
+    private storageHelperService: StorageHelperService
   ) {
-    this.cultureService.updateLang(this.cultureService.cultures[1]);
+    this.cultureInit = this.cultureStorageResolver()
+    this.createCulture();
   }
+  private createCulture() {
+    if (!this.cultureInit) {
+      this.cultureService.updateLang(this.cultureService.cultures[1]);
+    }
+  }
+
+  private cultureStorageResolver (): CultureSessionConfig {
+    const cultureStorage = this.storageHelperService.getSessionStorage(StorageServiceKey.CULTURE);
+    return cultureStorage
+  } 
 
   ngOnInit(): void {
     this.layoutDataBinding();
