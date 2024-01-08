@@ -43,10 +43,10 @@
                 <i class="header__button-icon fa-solid fa-bars"></i>
             </button>
         </div>
-        <ng-container *ngIf="cultures">
+        <ng-container *ngIf="availableCultures">
             <ul class="header__culture-list">
                 <li class="header__culture-list-item" 
-                    *ngFor="let culture of cultures">
+                    *ngFor="let culture of availableCultures">
                     <button class="header__button-culture" 
                         (click)="changeCulture(culture)">
                         {{ culture }}

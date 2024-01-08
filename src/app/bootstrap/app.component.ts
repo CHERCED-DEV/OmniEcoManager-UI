@@ -10,7 +10,8 @@ import { CommonService } from '../main/core/services/server/common/common.servic
 import { CultureSessionConfig, FooterConfig, HeaderConfig } from '../main/core/types/interfaces/common.interface';
 import { SharedModule } from '../main/shared/shared.module';
 import { StorageHelperService } from '../main/core/services/helpers/storage-helper/storage-helper.service';
-import { StorageServiceKey } from '../main/core/types/enums/storage.keys';
+import { StorageServiceKey } from '../main/core/types/enums/storage.keys.enum';
+import { AviableCulturesConfig } from '../main/core/types/enums/cultures.enum';
 
 @Component({
   selector: 'app-root',
@@ -48,7 +49,7 @@ export class AppComponent {
   }
   private createCulture() {
     if (!this.cultureInit) {
-      this.cultureService.updateLang(this.cultureService.cultures[1]);
+      this.cultureService.updateLang(AviableCulturesConfig.ES);
     }
   }
 

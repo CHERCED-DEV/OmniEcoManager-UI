@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../../environments/environment';
-import { StorageApiKeys } from '../../../types/enums/storage.keys';
+import { StorageApiKeys } from '../../../types/enums/storage.keys.enum';
 import { HttpsRequests } from '../../../types/enums/validation_types.enum';
 import { CommonApiConfig, LayoutConfig } from '../../../types/interfaces/common.interface';
 import { ApiHelperService } from '../../helpers/api-helper/api-helper.service';

@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { StorageHelperService } from '../storage-helper/storage-helper.service';
-import { StorageServiceKey } from '../../../types/enums/storage.keys';
+import { StorageServiceKey } from '../../../types/enums/storage.keys.enum';
 import { CultureSessionConfig } from '../../../types/interfaces/common.interface';
+import { AviableCulturesConfig } from '../../../types/enums/cultures.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CultureService {
-  public cultures: string[] = ['es', 'en', 'fr'];
   private currentLangSubject = new BehaviorSubject<string>('');
   private cultureStorage: CultureSessionConfig;
 
@@ -25,7 +25,7 @@ export class CultureService {
           init: true
         }
         this.storageHelperService.setSessionStorage(StorageServiceKey.CULTURE, options);
-      } else {
+      } else if (!!this.cultureStorage) {
         this.setLang(this.cultureStorage.value)
       }
     })
@@ -43,7 +43,7 @@ export class CultureService {
     this.currentLangSubject.next(lang);
   }
 
-  updateLang(lang: string) {
+  updateLang(lang: AviableCulturesConfig) {
     const currentUrl = this.router.url; // Obtiene la URL actual
     const currentLang = this.getLang();
     const newUrl = currentUrl.replace(`/${currentLang}`, `/${lang}`);

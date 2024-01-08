@@ -5,6 +5,7 @@ import { RoutesMenuNavConfig } from '../../../core/types/interfaces/actions.inte
 import { HeaderConfig } from '../../../core/types/interfaces/common.interface';
 import { environment } from '../../../../../environments/environment';
 import { CultureService } from '../../../core/services/helpers/culture/culture.service';
+import { AviableCulturesConfig } from '../../../core/types/enums/cultures.enum';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,7 @@ export class HeaderContainerComponent {
   isMobile: boolean = false;
   mobileWidth: number = 768;
   isOpenMenu: boolean = false;
-  cultures: string[] | null = null;
+  availableCultures: AviableCulturesConfig[] = Object.values(AviableCulturesConfig);
 
   constructor(
     private navigationService: NavigationService,
@@ -41,16 +42,12 @@ export class HeaderContainerComponent {
 
   private internalInit() {
     this.itsMobileScreen();
-    this.buildCultures();
     this.cultureOnChanges();
   }
 
-  private buildCultures() {
-    this.cultures = this.cultureService.cultures;
-  }
-
   private cultureOnChanges(){
-    this.cultureService.cultureListener().subscribe((newCulture: string) => {
+    this.cultureService.cultureListener()
+      .subscribe((newCulture: string) => {
       this.navigationRoutes = this.navigationService.getAllRoutes(newCulture);
     });
   }
@@ -71,7 +68,8 @@ export class HeaderContainerComponent {
   }
 
   public changeCulture(culture: string) {
-    this.cultureService.updateLang(culture);
+    const cultureEnumValue: AviableCulturesConfig = culture as AviableCulturesConfig;
+    this.cultureService.updateLang(cultureEnumValue);
   }
 
   //to rebuild the mobile var
