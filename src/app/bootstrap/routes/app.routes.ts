@@ -1,15 +1,11 @@
 import { Routes } from '@angular/router';
 import { NotFoundComponent } from '../../domains/info/pages/not-found/not-found.component';
-import { CultureResolver } from '../../main/core/services/helpers/culture/resolver/culture-resolver.service';
 
 export const routes: Routes = [
   {
     path: ':lang',
     redirectTo: ':lang/home',
     pathMatch: 'full',
-    resolve: {
-      culture: CultureResolver,
-    },
   },
   {
     path: ':lang',

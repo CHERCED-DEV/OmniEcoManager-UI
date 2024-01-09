@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { RoutesMenuNavConfig } from '../../../../../core/types/interfaces/actions.interface';
 import { Observable } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
-import { NavigationService } from '../../../../../core/services/server/navigation/navigation.service';
-import { CultureService } from '../../../../../core/services/helpers/culture/culture.service';
+import { NavigationService } from '../../../../../core/helpers/navigation/navigation.service';
+import { CultureService } from '../../../../../core/services/culture/culture.service';
 
 @Component({
   selector: 'app-overlay-menu',

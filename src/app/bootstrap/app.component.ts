@@ -3,15 +3,14 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '../main/common/layout/layout.module';
-import { CultureService } from '../main/core/services/helpers/culture/culture.service';
-import { TranslationService } from '../main/core/services/helpers/translation/translation.service';
+import { CommonService } from '../main/common/services/common/common.service';
+import { CultureService } from '../main/core/services/culture/culture.service';
+import { StorageHelperService } from '../main/core/helpers/storage-helper/storage-helper.service';
 import { InputsValidationService } from '../main/core/services/security/validation/inputs/inputs-validation.service';
-import { CommonService } from '../main/core/services/server/common/common.service';
+import { AviableCulturesConfig } from '../main/core/types/enums/cultures.enum';
+import { StorageServiceKey } from '../main/core/types/enums/storage.keys.enum';
 import { CultureSessionConfig, FooterConfig, HeaderConfig } from '../main/core/types/interfaces/common.interface';
 import { SharedModule } from '../main/shared/shared.module';
-import { StorageHelperService } from '../main/core/services/helpers/storage-helper/storage-helper.service';
-import { StorageServiceKey } from '../main/core/types/enums/storage.keys.enum';
-import { AviableCulturesConfig } from '../main/core/types/enums/cultures.enum';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +21,7 @@ import { AviableCulturesConfig } from '../main/core/types/enums/cultures.enum';
     TranslateModule,
     LayoutModule,
     SharedModule],
-  providers: [CommonService, CultureService, TranslationService, InputsValidationService],
+  providers: [CommonService, CultureService, InputsValidationService],
   template: `
   <div class="page-wrap">
     <app-header
@@ -36,7 +35,7 @@ import { AviableCulturesConfig } from '../main/core/types/enums/cultures.enum';
   </div>`
 })
 export class AppComponent {
-  public cultureInit!: CultureSessionConfig;
+  public cultureInit: CultureSessionConfig;
   public header!: HeaderConfig;
   public footer!: FooterConfig;
   constructor(
@@ -44,7 +43,7 @@ export class AppComponent {
     private cultureService: CultureService,
     private storageHelperService: StorageHelperService
   ) {
-    this.cultureInit = this.cultureStorageResolver()
+    this.cultureInit = this.cultureStorageResolver();
     this.createCulture();
   }
   private createCulture() {
