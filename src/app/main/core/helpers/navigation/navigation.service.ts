@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { NodeMenuNavConfig, RoutesMenuNavConfig } from '../../types/interfaces/actions.interface';
+import { NodeMenuNavConfig, RoutesMenuNavConfig } from '../../types/interfaces/shared/navigation.interface';
 
 @Injectable({
   providedIn: 'root'

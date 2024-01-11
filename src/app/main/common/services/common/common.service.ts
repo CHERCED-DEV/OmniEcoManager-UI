@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
 import { StorageApiKeys } from '../../../core/types/enums/storage.keys.enum';
 import { HttpsRequests } from '../../../core/types/enums/validation_types.enum';
-import { CommonApiConfig, LayoutConfig } from '../../../core/types/interfaces/common.interface';
+import { CommonApiConfig, LayoutConfig } from '../../../core/types/interfaces/domains/common.interface';
 import { ApiHelperService } from '../../../core/helpers/api-helper/api-helper.service';
 import { StorageHelperService } from '../../../core/helpers/storage-helper/storage-helper.service';
 import { CultureService } from '../../../core/services/culture/culture.service';

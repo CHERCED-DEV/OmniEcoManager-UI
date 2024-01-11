@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CheckboxConfig } from '../../../../main/core/types/interfaces/ui-elements.interface';
+import { CheckboxConfig } from '../../../core/types/interfaces/shared/ui-elements.interface';
 
 @Component({
   selector: 'ui-checkbox',

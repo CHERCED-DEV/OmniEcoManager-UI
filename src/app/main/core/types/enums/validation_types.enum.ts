@@ -23,3 +23,11 @@ export enum HttpsRequests {
   DELETE = 'DELETE',
   PATCH = 'PATCH',
 }
+
+type inputsRegexsConfig = {
+  [key in KeyInputConfig]: string;
+}
+
+type inputsTypesConfig = {
+  [key in CommonInputType]: string;
+}

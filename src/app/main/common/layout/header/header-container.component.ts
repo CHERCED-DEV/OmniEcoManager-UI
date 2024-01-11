@@ -1,8 +1,8 @@
 import { Component, HostListener, Input, SimpleChanges } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { NavigationService } from '../../../core/helpers/navigation/navigation.service';
-import { RoutesMenuNavConfig } from '../../../core/types/interfaces/actions.interface';
-import { HeaderConfig } from '../../../core/types/interfaces/common.interface';
+import { RoutesMenuNavConfig } from '../../../core/types/interfaces/shared/navigation.interface';
+import { HeaderConfig } from '../../../core/types/interfaces/domains/common.interface';
 import { environment } from '../../../../../environments/environment';
 import { CultureService } from '../../../core/services/culture/culture.service';
 import { AviableCulturesConfig } from '../../../core/types/enums/cultures.enum';

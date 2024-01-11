@@ -1,11 +1,10 @@
-import { CommonInputType, KeyInputConfig } from "../enums/validation_types.enum";
-import { ImageAttributes } from "./strapiCallers/strapi.entities.interface";
 import {
   ButtonConfig,
   ImgsSimpleConfig,
   InputConfig,
   LinkConfig
-} from "./ui-elements.interface";
+} from "../shared/ui-elements.interface";
+import { ImageAttributes } from "../strapi-helpers/strapi-entities.interface";
 
 //atoms
 interface AlertConfig {
@@ -35,26 +34,13 @@ interface NewsLetterConfig {
   button: ButtonConfig;
 }
 
-type inputsRegexsConfig = {
-  [key in KeyInputConfig]: string;
-}
-
-type inputsTypesConfig = {
-  [key in CommonInputType]: string;
-}
-
-
-
 // molecules
-export interface ErrorMessagesInputConfig extends inputsTypesConfig {
-}
-export interface RegexInputConfigs extends inputsRegexsConfig {
-}
 export interface HeaderConfig {
   brand_logo: ImageAttributes;
   search: SearchConfig;
   alerts: AlertConfig[];
 }
+
 export interface FooterConfig {
   brand_logo: ImageAttributes;
   newsletter: NewsLetterConfig;
@@ -75,11 +61,4 @@ export interface LayoutConfig {
 
 export interface CommonApiConfig {
   layout: LayoutConfig;
-  error_messages: ErrorMessagesInputConfig
-  regex: RegexInputConfigs;
-}
-
-export interface CultureSessionConfig {
-  value: string;
-  init: boolean;
 }

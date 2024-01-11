@@ -1,5 +1,5 @@
 import { Component, Input, EventEmitter } from '@angular/core';
-import { ButtonConfig } from '../../../../main/core/types/interfaces/ui-elements.interface';
+import { ButtonConfig } from '../../../core/types/interfaces/shared/ui-elements.interface';
 
 @Component({
   selector: 'ui-button',

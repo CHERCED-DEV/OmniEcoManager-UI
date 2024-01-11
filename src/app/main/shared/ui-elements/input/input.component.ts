@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { InputConfig } from '../../../core/types/interfaces/ui-elements.interface';
+import { InputConfig } from '../../../core/types/interfaces/shared/ui-elements.interface';
 
 @Component({
   selector: 'ui-input',

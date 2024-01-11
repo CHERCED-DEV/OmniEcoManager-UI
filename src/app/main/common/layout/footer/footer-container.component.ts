@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FooterConfig } from '../../../core/types/interfaces/common.interface';
+import { FooterConfig } from '../../../core/types/interfaces/domains/common.interface';
 
 @Component({
   selector: 'app-footer',

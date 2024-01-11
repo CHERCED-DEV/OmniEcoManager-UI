@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { RoutesMenuNavConfig } from '../../../../../core/types/interfaces/actions.interface';
+import { RoutesMenuNavConfig } from '../../../../../core/types/interfaces/shared/navigation.interface';
 import { Observable } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { NavigationService } from '../../../../../core/helpers/navigation/navigation.service';

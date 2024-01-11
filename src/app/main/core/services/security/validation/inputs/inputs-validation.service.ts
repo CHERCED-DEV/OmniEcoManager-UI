@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CommonApiConfig, ErrorMessagesInputConfig, RegexInputConfigs } from '../../../../types/interfaces/common.interface';
+import { CommonApiConfig, ErrorMessagesInputConfig, RegexInputConfigs } from '../../../../types/interfaces/domains/common.interface';
 import { StorageHelperService } from '../../../../helpers/storage-helper/storage-helper.service';
 import { StorageApiKeys } from '../../../../types/enums/storage.keys.enum';
 import { CommonInputType, KeyInputConfig } from '../../../../types/enums/validation_types.enum';

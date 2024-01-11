@@ -9,7 +9,7 @@ import { StorageHelperService } from '../main/core/helpers/storage-helper/storag
 import { InputsValidationService } from '../main/core/services/security/validation/inputs/inputs-validation.service';
 import { AviableCulturesConfig } from '../main/core/types/enums/cultures.enum';
 import { StorageServiceKey } from '../main/core/types/enums/storage.keys.enum';
-import { CultureSessionConfig, FooterConfig, HeaderConfig } from '../main/core/types/interfaces/common.interface';
+import { CultureSessionConfig, FooterConfig, HeaderConfig } from '../main/core/types/interfaces/domains/common.interface';
 import { SharedModule } from '../main/shared/shared.module';
 
 @Component({

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { StorageHelperService } from '../../helpers/storage-helper/storage-helper.service';
 import { StorageServiceKey } from '../../types/enums/storage.keys.enum';
-import { CultureSessionConfig } from '../../types/interfaces/common.interface';
+import { CultureSessionConfig } from '../../types/interfaces/domains/common.interface';
 import { AviableCulturesConfig } from '../../types/enums/cultures.enum';
 
 @Injectable({
