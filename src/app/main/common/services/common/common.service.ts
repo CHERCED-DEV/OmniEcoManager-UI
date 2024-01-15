@@ -33,7 +33,7 @@ export class CommonService {
   }
 
   private inicializate() {
-    this.apiService.request(HttpsRequests.GET, environment.commonApi, this.langHeader)
+    this.apiService.request<CommonApiConfig>(HttpsRequests.GET, environment.commonApi, this.langHeader)
     .subscribe((data: CommonApiConfig ) => {
         this.storageHelperService.setSessionStorage(StorageApiKeys.COMMON, data);
         this.createObjects(data)

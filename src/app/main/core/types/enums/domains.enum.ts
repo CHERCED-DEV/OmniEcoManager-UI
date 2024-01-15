@@ -5,3 +5,11 @@ export enum ApiDomains {
     INFO = 'info',
     MEMBERS = 'members'
 }
+
+export enum ApiKeyObjDomains {
+    BLOG = 'blog',
+    ECO = 'eco',
+    COMMON = 'common',
+    INFO = 'info',
+    MEMBERS = 'members'
+}
