@@ -1,53 +1,34 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../../../environments/environment';
-import { StorageApiKeys } from '../../../core/types/enums/storage.keys.enum';
-import { HttpsRequests } from '../../../core/types/enums/validation_types.enum';
-import { CommonApiConfig, LayoutConfig } from '../../../core/types/interfaces/domains/common.interface';
-import { ApiHelperService } from '../../../core/helpers/api-helper/api-helper.service';
-import { StorageHelperService } from '../../../core/helpers/storage-helper/storage-helper.service';
+import { ApiDataManagerService } from '../../../core/drivers/api-data-manager/api-data-manager.service';
 import { CultureService } from '../../../core/services/culture/culture.service';
+import { CommonApiConfig, LayoutConfig } from '../../../core/types/interfaces/domains/common.interface';
+import { ApiDomains } from '../../../core/types/enums/domains.enum';
+import { StorageApiKeys } from '../../../core/types/enums/storage.keys.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
-  private langHeader!: string;
-  private commonSessionStorage: CommonApiConfig;
   public layout: LayoutConfig = {} as LayoutConfig;
 
 
   constructor(
-    private apiService: ApiHelperService,
-    private storageHelperService: StorageHelperService,
-    private cultureService: CultureService
+    private cultureService: CultureService,
+    private dataCenter: ApiDataManagerService
   ) {
     this.cultureService.cultureListener().subscribe((currentLang)=> {
-      this.langHeader = currentLang;
+      this.dataCenter.initializeDataCenter(currentLang, ApiDomains.COMMON, StorageApiKeys.COMMON)
     })
-    this.commonSessionStorage = this.storageHelperService.getSessionStorage(StorageApiKeys.COMMON);
-    if (!this.commonSessionStorage) {
-      this.inicializate()
-    } else {
-      this.createObjects(this.commonSessionStorage)
-    }
+    console.log(this.dataCenter.getData(ApiDomains.COMMON)?.getValue());
+    this.createObjects(this.dataCenter.getData(ApiDomains.COMMON)?.getValue())
   }
 
-  private inicializate() {
-    this.apiService.request<CommonApiConfig>(HttpsRequests.GET, environment.commonApi, this.langHeader)
-    .subscribe((data: CommonApiConfig ) => {
-        this.storageHelperService.setSessionStorage(StorageApiKeys.COMMON, data);
-        this.createObjects(data)
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-  }
 
-  private createObjects(call: CommonApiConfig) {
+  private createObjects(call: any) {
+    console.log(call.layout?.header);
     this.layout = {
-      header: call.layout.header,
-      footer: call.layout.footer,
+      header: call.layout?.header,
+      footer: call.layout?.footer,
     };
   }
 }

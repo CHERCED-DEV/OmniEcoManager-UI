@@ -6,10 +6,10 @@ import { LayoutModule } from '../main/common/layout/layout.module';
 import { CommonService } from '../main/common/services/common/common.service';
 import { CultureService } from '../main/core/services/culture/culture.service';
 import { StorageHelperService } from '../main/core/helpers/storage-helper/storage-helper.service';
-import { InputsValidationService } from '../main/core/services/security/validation/inputs/inputs-validation.service';
 import { AviableCulturesConfig } from '../main/core/types/enums/cultures.enum';
 import { StorageServiceKey } from '../main/core/types/enums/storage.keys.enum';
-import { CultureSessionConfig, FooterConfig, HeaderConfig } from '../main/core/types/interfaces/domains/common.interface';
+import { FooterConfig, HeaderConfig } from '../main/core/types/interfaces/domains/common.interface';
+import { CultureSessionConfig } from '../main/core/types/interfaces/shared/culture.interface';
 import { SharedModule } from '../main/shared/shared.module';
 
 @Component({
@@ -21,7 +21,7 @@ import { SharedModule } from '../main/shared/shared.module';
     TranslateModule,
     LayoutModule,
     SharedModule],
-  providers: [CommonService, CultureService, InputsValidationService],
+  providers: [CommonService, CultureService],
   template: `
   <div class="page-wrap">
     <app-header

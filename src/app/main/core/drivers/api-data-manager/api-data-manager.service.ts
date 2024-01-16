@@ -8,8 +8,8 @@ import { StorageApiKeys } from '../../types/enums/storage.keys.enum';
 import { HttpsRequests } from '../../types/enums/validation_types.enum';
 import { ApiDataManagerConfig } from '../../types/interfaces/domains/api-data-manager.interface';
 import { BlogApiConfig } from '../../types/interfaces/domains/blog.domain.interface';
-import { EcoApiConfig } from '../../types/interfaces/domains/eco.domain.interface';
 import { CommonApiConfig } from '../../types/interfaces/domains/common.interface';
+import { EcoApiConfig } from '../../types/interfaces/domains/eco.domain.interface';
 import { InfoApiConfig } from '../../types/interfaces/domains/info.domain.interface';
 import { MembersApiConfig } from '../../types/interfaces/domains/membars.domian.interface';
 
@@ -17,11 +17,11 @@ import { MembersApiConfig } from '../../types/interfaces/domains/membars.domian.
   providedIn: 'root'
 })
 export class ApiDataManagerService {
-  private dataCenter = new BehaviorSubject<any>({});
+  private dataCenters: { [key in ApiDomains]?: BehaviorSubject<unknown> } = {};
 
   constructor(
     private apiService: ApiHelperService,
-    private storageHelperService: StorageHelperService) {
+    private storageHelper: StorageHelperService) {
   }
 
   public initializeDataCenter(
@@ -31,46 +31,58 @@ export class ApiDataManagerService {
     temporalData: boolean = true,
     createStorage: boolean = true
   ): void {
-    const fullUrl: string = `${environment.restServer}/${domain}`
-    this.apiService.request<ApiDataManagerConfig>(HttpsRequests.GET, fullUrl, culture)
-      .subscribe((res) => {
-        const apiKeyObjDomain = this.mapToApiKeyObjDomain(domain);
+    const fullUrl: string = `${environment.restServer}/${domain}`;
+    const apiKeyObjDomain = this.mapToApiKeyObjDomain(domain)
+    this.apiService.request<ApiDataManagerConfig>(HttpsRequests.GET, fullUrl, culture).subscribe(
+      (res) => {
+        const dataCenter = this.getDataCenter(domain);
         if (createStorage) {
-          this.validateAndCreateStorage(temporalData, storageKey, this.mapAsDomainInterface(res[apiKeyObjDomain], domain))
+          this.validateAndCreateStorage(temporalData, storageKey, this.mapAsDomainInterface(res[apiKeyObjDomain], domain), dataCenter);
         } else {
-          this.dataCenter.next(this.mapAsDomainInterface(res[apiKeyObjDomain], domain));
+          dataCenter.next(this.mapAsDomainInterface(apiKeyObjDomain, domain));
         }
       },
-        (error) => {
-          console.error('Error initializing data center:', error);
-        }
-      );
+      (error) => {
+        console.error('Error initializing data center:', error);
+      }
+    );
   }
 
-  public getData(): ApiDataManagerConfig {
-    return this.dataCenter.getValue();
+  public getData(domain: ApiDomains,): BehaviorSubject<unknown> | undefined {
+    const dataCenter = this.getDataCenter(domain);
+    return dataCenter as BehaviorSubject<unknown> | undefined;
   }
 
   public clearData(): void {
-    this.dataCenter.next({});
+    Object.keys(this.dataCenters).forEach((key) => {
+      const domainKey = key as ApiDomains;
+      this.dataCenters[domainKey]!.next({});
+    });
   }
 
-  private validateAndCreateStorage(temporalData: boolean, storageKey: StorageApiKeys, res: any) {
+  private getDataCenter(domain: ApiDomains): BehaviorSubject<unknown> {
+    if (!this.dataCenters[domain]) {
+      this.dataCenters[domain] = new BehaviorSubject<unknown>({});
+    }
+    return this.dataCenters[domain]!;
+  }
+
+  private validateAndCreateStorage(temporalData: boolean, storageKey: StorageApiKeys, res: any, dataCenter: BehaviorSubject<unknown>) {
     const storageMethod = temporalData ? 'getSessionStorage' : 'getLocalStorage';
-    const currentStorage = this.storageHelperService[storageMethod](storageKey);
+    const currentStorage = this.storageHelper[storageMethod](storageKey);
     if (currentStorage && this.objAreEqual(currentStorage, res)) {
-      this.dataCenter.next(res);
+      dataCenter.next(res);
     } else {
       this.createStorage(temporalData, storageKey, res);
     }
   }
 
-  private createStorage(temporalData: boolean, storageKey: StorageApiKeys, res: any) {
+  private createStorage(temporalData: boolean, storageKey: StorageApiKeys, res: unknown) {
     const storageMethod = temporalData ? 'setSessionStorage' : 'setLocalStorage';
-    this.storageHelperService[storageMethod](storageKey, res);
+    this.storageHelper[storageMethod](storageKey, res);
   }
 
-  private mapAsDomainInterface(res: any, domain: ApiDomains): any {
+  private mapAsDomainInterface(res: any, domain: ApiDomains): unknown {
     switch (domain) {
       case ApiDomains.BLOG:
         return res as BlogApiConfig;
@@ -86,7 +98,6 @@ export class ApiDataManagerService {
         throw new Error(`Unhandled domain: ${domain}`);
     }
   }
-  
 
   private mapToApiKeyObjDomain(apiDomain: ApiDomains): ApiKeyObjDomains {
     switch (apiDomain) {
