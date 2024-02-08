@@ -13,16 +13,14 @@ import { EcoApiConfig } from '../../types/interfaces/domains/eco.domain.interfac
 import { InfoApiConfig } from '../../types/interfaces/domains/info.domain.interface';
 import { MembersApiConfig } from '../../types/interfaces/domains/membars.domian.interface';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ApiDataManagerService {
-  private dataCenters: { [key in ApiDomains]?: BehaviorSubject<unknown> } = {};
+@Injectable()
+export class ApiDataManagerService<T = unknown> {
+  private dataCenter: BehaviorSubject<T> = new BehaviorSubject<T>({} as T);
 
   constructor(
     private apiService: ApiHelperService,
-    private storageHelper: StorageHelperService) {
-  }
+    private storageHelper: StorageHelperService
+  ) { }
 
   public initializeDataCenter(
     culture: string,
@@ -32,68 +30,64 @@ export class ApiDataManagerService {
     createStorage: boolean = true
   ): void {
     const fullUrl: string = `${environment.restServer}/${domain}`;
-    const apiKeyObjDomain = this.mapToApiKeyObjDomain(domain)
-    this.apiService.request<ApiDataManagerConfig>(HttpsRequests.GET, fullUrl, culture).subscribe(
-      (res) => {
-        const dataCenter = this.getDataCenter(domain);
-        if (createStorage) {
-          this.validateAndCreateStorage(temporalData, storageKey, this.mapAsDomainInterface(res[apiKeyObjDomain], domain), dataCenter);
-        } else {
-          dataCenter.next(this.mapAsDomainInterface(apiKeyObjDomain, domain));
+    const apiKeyObjDomain = this.mapToApiKeyObjDomain(domain);
+    this.apiService
+      .request<ApiDataManagerConfig>(HttpsRequests.GET, fullUrl, culture)
+      .subscribe(
+        (res) => {
+          if (createStorage) {
+            this.validateAndCreateStorage(
+              temporalData,
+              storageKey,
+              this.mapAsDomainInterface(res[apiKeyObjDomain], domain)
+            );
+          } else {
+            this.dataCenter.next(this.mapAsDomainInterface(apiKeyObjDomain, domain));
+          }
         }
-      },
-      (error) => {
-        console.error('Error initializing data center:', error);
-      }
-    );
+      );
   }
 
-  public getData(domain: ApiDomains,): BehaviorSubject<unknown> | undefined {
-    const dataCenter = this.getDataCenter(domain);
-    return dataCenter as BehaviorSubject<unknown> | undefined;
+  public validateAndCreateStorage(
+    temporalData: boolean,
+    storageKey: StorageApiKeys,
+    res: T
+  ) {
+    const storageMethod = temporalData ? 'getSessionStorage' : 'getLocalStorage';
+    const currentStorage = this.storageHelper[storageMethod](storageKey);
+    if (currentStorage === null || !this.objAreEqual(res, currentStorage)) {
+      this.createStorage(temporalData, storageKey, res);
+      this.dataCenter.next(res);
+    } else {
+      this.dataCenter.next(currentStorage);
+    }
+  }
+
+  public getData(): BehaviorSubject<T> {
+    return this.dataCenter;
   }
 
   public clearData(): void {
-    Object.keys(this.dataCenters).forEach((key) => {
-      const domainKey = key as ApiDomains;
-      this.dataCenters[domainKey]!.next({});
-    });
+    this.dataCenter.next({} as T);
   }
 
-  private getDataCenter(domain: ApiDomains): BehaviorSubject<unknown> {
-    if (!this.dataCenters[domain]) {
-      this.dataCenters[domain] = new BehaviorSubject<unknown>({});
-    }
-    return this.dataCenters[domain]!;
-  }
-
-  private validateAndCreateStorage(temporalData: boolean, storageKey: StorageApiKeys, res: any, dataCenter: BehaviorSubject<unknown>) {
-    const storageMethod = temporalData ? 'getSessionStorage' : 'getLocalStorage';
-    const currentStorage = this.storageHelper[storageMethod](storageKey);
-    if (currentStorage && this.objAreEqual(currentStorage, res)) {
-      dataCenter.next(res);
-    } else {
-      this.createStorage(temporalData, storageKey, res);
-    }
-  }
-
-  private createStorage(temporalData: boolean, storageKey: StorageApiKeys, res: unknown) {
+  private createStorage(temporalData: boolean, storageKey: StorageApiKeys, res: T) {
     const storageMethod = temporalData ? 'setSessionStorage' : 'setLocalStorage';
     this.storageHelper[storageMethod](storageKey, res);
   }
 
-  private mapAsDomainInterface(res: any, domain: ApiDomains): unknown {
+  private mapAsDomainInterface(res: any, domain: ApiDomains): T {
     switch (domain) {
       case ApiDomains.BLOG:
-        return res as BlogApiConfig;
+        return res as BlogApiConfig as T;
       case ApiDomains.ECO:
-        return res as EcoApiConfig;
+        return res as EcoApiConfig as T;
       case ApiDomains.COMMON:
-        return res as CommonApiConfig;
+        return res as CommonApiConfig as T;
       case ApiDomains.INFO:
-        return res as InfoApiConfig;
+        return res as InfoApiConfig as T;
       case ApiDomains.MEMBERS:
-        return res as MembersApiConfig;
+        return res as MembersApiConfig as T;
       default:
         throw new Error(`Unhandled domain: ${domain}`);
     }
@@ -116,8 +110,7 @@ export class ApiDataManagerService {
     }
   }
 
-  private objAreEqual(obj: any[], obj2: any[]): boolean {
+  private objAreEqual(obj: T, obj2: T): boolean {
     return JSON.stringify(obj) === JSON.stringify(obj2);
   }
-
 }

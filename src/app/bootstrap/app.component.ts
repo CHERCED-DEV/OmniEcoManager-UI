@@ -3,14 +3,16 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '../main/common/layout/layout.module';
-import { CommonService } from '../main/common/services/common/common.service';
-import { CultureService } from '../main/core/services/culture/culture.service';
+import { ApiDataManagerService } from '../main/core/factories/api-data-manager/api-data-manager.service';
 import { StorageHelperService } from '../main/core/helpers/storage-helper/storage-helper.service';
+import { CultureService } from '../main/core/services/culture/culture.service';
 import { AviableCulturesConfig } from '../main/core/types/enums/cultures.enum';
-import { StorageServiceKey } from '../main/core/types/enums/storage.keys.enum';
-import { FooterConfig, HeaderConfig } from '../main/core/types/interfaces/domains/common.interface';
+import { ApiDomains } from '../main/core/types/enums/domains.enum';
+import { StorageApiKeys, StorageServiceKey } from '../main/core/types/enums/storage.keys.enum';
+import { CommonApiConfig, FooterConfig, HeaderConfig } from '../main/core/types/interfaces/domains/common.interface';
 import { CultureSessionConfig } from '../main/core/types/interfaces/shared/culture.interface';
 import { SharedModule } from '../main/shared/shared.module';
+import { ApiHelperService } from '../main/core/helpers/api-helper/api-helper.service';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +23,7 @@ import { SharedModule } from '../main/shared/shared.module';
     TranslateModule,
     LayoutModule,
     SharedModule],
-  providers: [CommonService, CultureService],
+  providers: [ApiHelperService, ApiDataManagerService, CultureService],
   template: `
   <div class="page-wrap">
     <app-header
@@ -35,34 +37,57 @@ import { SharedModule } from '../main/shared/shared.module';
   </div>`
 })
 export class AppComponent {
-  public cultureInit: CultureSessionConfig;
+  private cultureInit!: CultureSessionConfig;
+
   public header!: HeaderConfig;
   public footer!: FooterConfig;
+
+  private commonDataCenterService: ApiDataManagerService<CommonApiConfig>;
+  private temporalData: boolean = false;
+
   constructor(
-    private commonService: CommonService,
     private cultureService: CultureService,
-    private storageHelperService: StorageHelperService
+    private storageHelperService: StorageHelperService,
+    private apiHelperService: ApiHelperService,
   ) {
-    this.cultureInit = this.cultureStorageResolver();
     this.createCulture();
+    this.commonDataCenterService = new ApiDataManagerService<CommonApiConfig>(apiHelperService, storageHelperService);
   }
+
+  ngOnInit(): void {
+    this.cultureService.cultureListener().subscribe(
+      (currentLang) => {
+        if (currentLang !== null && currentLang !== undefined && currentLang !== '') {
+          this.commonDataCenterService.initializeDataCenter(
+            currentLang,
+            ApiDomains.COMMON,
+            StorageApiKeys.COMMON,
+            this.temporalData
+          )
+        }
+      }
+    )
+    this.layoutDataBinding();
+  }
+
   private createCulture() {
+    this.cultureInit = this.cultureStorageResolver();
     if (!this.cultureInit) {
       this.cultureService.updateLang(AviableCulturesConfig.ES);
     }
   }
 
-  private cultureStorageResolver (): CultureSessionConfig {
+  private cultureStorageResolver(): CultureSessionConfig {
     const cultureStorage = this.storageHelperService.getSessionStorage(StorageServiceKey.CULTURE);
     return cultureStorage
-  } 
-
-  ngOnInit(): void {
-    this.layoutDataBinding();
   }
 
   private layoutDataBinding() {
-    this.header = this.commonService.layout.header;
-    this.footer = this.commonService.layout.footer;
+    this.commonDataCenterService.getData().subscribe(
+      (data) => {
+        this.header = data.layout?.header,
+        this.footer = data.layout?.footer
+      }
+    )
   }
 }
