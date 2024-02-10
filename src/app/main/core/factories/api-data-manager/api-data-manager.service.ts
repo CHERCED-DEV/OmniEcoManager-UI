@@ -3,8 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { ApiHelperService } from '../../helpers/api-helper/api-helper.service';
 import { StorageHelperService } from '../../helpers/storage-helper/storage-helper.service';
-import { ApiDomains, ApiKeyObjDomains } from '../../types/enums/domains.enum';
-import { StorageApiKeys } from '../../types/enums/storage.keys.enum';
+import { ApiDomains } from '../../types/enums/domains.enum';
+import { GenericCultureNode, StorageApiKeys } from '../../types/enums/storage.keys.enum';
 import { HttpsRequests } from '../../types/enums/validation_types.enum';
 import { ApiDataManagerConfig } from '../../types/interfaces/domains/api-data-manager.interface';
 import { BlogApiConfig } from '../../types/interfaces/domains/blog.domain.interface';
@@ -16,11 +16,15 @@ import { MembersApiConfig } from '../../types/interfaces/domains/membars.domian.
 @Injectable()
 export class ApiDataManagerService<T = unknown> {
   private dataCenter: BehaviorSubject<T> = new BehaviorSubject<T>({} as T);
+  private localStorage: Array<{ key: StorageApiKeys, value: T }> = [];
+  private sessionStorage: Array<{ key: StorageApiKeys, value: T }> = [];
 
   constructor(
     private apiService: ApiHelperService,
     private storageHelper: StorageHelperService
-  ) { }
+  ) {
+    this.storageValidator();
+  }
 
   public initializeDataCenter(
     culture: string,
@@ -31,7 +35,12 @@ export class ApiDataManagerService<T = unknown> {
   ): void {
     const fullUrl: string = `${environment.restServer}/${domain}`;
     const apiKeyObjDomain = this.mapToApiKeyObjDomain(domain);
-    this.apiService
+    if (this.storageHasValueForKey(temporalData, storageKey)) {
+      const storageMethod = temporalData ? 'getSessionStorage' : 'getLocalStorage';
+      const currentStorage = this.storageHelper[storageMethod](storageKey);
+      this.dataCenter.next(this.mapAsDomainInterface(currentStorage, domain));
+    } else {
+      this.apiService
       .request<ApiDataManagerConfig>(HttpsRequests.GET, fullUrl, culture)
       .subscribe(
         (res) => {
@@ -42,10 +51,11 @@ export class ApiDataManagerService<T = unknown> {
               this.mapAsDomainInterface(res[apiKeyObjDomain], domain)
             );
           } else {
-            this.dataCenter.next(this.mapAsDomainInterface(apiKeyObjDomain, domain));
+            this.dataCenter.next(this.mapAsDomainInterface(res[apiKeyObjDomain], domain));
           }
         }
       );
+    }    
   }
 
   public validateAndCreateStorage(
@@ -53,8 +63,7 @@ export class ApiDataManagerService<T = unknown> {
     storageKey: StorageApiKeys,
     res: T
   ) {
-    const storageMethod = temporalData ? 'getSessionStorage' : 'getLocalStorage';
-    const currentStorage = this.storageHelper[storageMethod](storageKey);
+
     if (currentStorage === null || !this.objAreEqual(res, currentStorage)) {
       this.createStorage(temporalData, storageKey, res);
       this.dataCenter.next(res);
@@ -63,17 +72,46 @@ export class ApiDataManagerService<T = unknown> {
     }
   }
 
+  private createStorage(temporalData: boolean, storageKey: StorageApiKeys, res: T) {
+    const storageMethod = temporalData ? 'setSessionStorage' : 'setLocalStorage';
+    this.storageHelper[storageMethod](storageKey, res);
+  }
+
+  public createCultureNode<T>(culture: string, res: T): GenericCultureNode<T> {
+    const cultureNode: GenericCultureNode<T> = {};
+    cultureNode[culture] = res;
+    return cultureNode;
+  }
+
+  private storageHasValueForKey(
+    temporalData: boolean,
+    storageKey: StorageApiKeys,
+  ): any {
+    if (temporalData) {
+      const sessionItem = this.sessionStorage.find(item => item.key === storageKey);
+      return sessionItem
+    } else {
+      const localItem = this.localStorage.find(item => item.key === storageKey);
+      return localItem
+    }
+  }
+
+  private storageValidator(): void {
+    const storageKeys: StorageApiKeys[] = Object.values(StorageApiKeys);
+    storageKeys.forEach((key) => {
+      const localRes = this.storageHelper.getLocalStorage(key);
+      const sessionRes = this.storageHelper.getSessionStorage(key);
+      this.localStorage.push({ key, value: localRes });
+      this.sessionStorage.push({ key, value: sessionRes });
+    })
+  }
+
   public getData(): BehaviorSubject<T> {
     return this.dataCenter;
   }
 
   public clearData(): void {
     this.dataCenter.next({} as T);
-  }
-
-  private createStorage(temporalData: boolean, storageKey: StorageApiKeys, res: T) {
-    const storageMethod = temporalData ? 'setSessionStorage' : 'setLocalStorage';
-    this.storageHelper[storageMethod](storageKey, res);
   }
 
   private mapAsDomainInterface(res: any, domain: ApiDomains): T {
@@ -93,18 +131,18 @@ export class ApiDataManagerService<T = unknown> {
     }
   }
 
-  private mapToApiKeyObjDomain(apiDomain: ApiDomains): ApiKeyObjDomains {
+  private mapToApiKeyObjDomain(apiDomain: ApiDomains): StorageApiKeys {
     switch (apiDomain) {
       case ApiDomains.BLOG:
-        return ApiKeyObjDomains.BLOG;
+        return StorageApiKeys.BLOG;
       case ApiDomains.ECO:
-        return ApiKeyObjDomains.ECO;
+        return StorageApiKeys.ECO;
       case ApiDomains.COMMON:
-        return ApiKeyObjDomains.COMMON;
+        return StorageApiKeys.COMMON;
       case ApiDomains.INFO:
-        return ApiKeyObjDomains.INFO;
+        return StorageApiKeys.INFO;
       case ApiDomains.MEMBERS:
-        return ApiKeyObjDomains.MEMBERS;
+        return StorageApiKeys.MEMBERS;
       default:
         throw new Error(`Unhandled domain: ${apiDomain}`);
     }

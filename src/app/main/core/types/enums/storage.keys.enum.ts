@@ -1,8 +1,15 @@
 export enum StorageApiKeys {
-    COMMON= 'common',
+    BLOG = 'blog',
+    ECO = 'eco',
+    COMMON = 'common',
+    INFO = 'info',
+    MEMBERS = 'members'
 }
 export enum StorageServiceKey {
     CULTURE= 'culture'
+}
+export interface GenericCultureNode<T> {
+    [key: string]: T;
 }
 
 export type StorageMethodRes = 'getSessionStorage' | 'getLocalStorage';
