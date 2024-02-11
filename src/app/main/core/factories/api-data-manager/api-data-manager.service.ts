@@ -4,7 +4,11 @@ import { environment } from '../../../../../environments/environment';
 import { ApiHelperService } from '../../helpers/api-helper/api-helper.service';
 import { StorageHelperService } from '../../helpers/storage-helper/storage-helper.service';
 import { ApiDomains } from '../../types/enums/domains.enum';
-import { GenericCultureNode, StorageApiKeys } from '../../types/enums/storage.keys.enum';
+import {
+  GenericCultureNode,
+  GenericStorageContent,
+  StorageApiKeys
+} from '../../types/enums/storage.keys.enum';
 import { HttpsRequests } from '../../types/enums/validation_types.enum';
 import { ApiDataManagerConfig } from '../../types/interfaces/domains/api-data-manager.interface';
 import { BlogApiConfig } from '../../types/interfaces/domains/blog.domain.interface';
@@ -16,8 +20,8 @@ import { MembersApiConfig } from '../../types/interfaces/domains/membars.domian.
 @Injectable()
 export class ApiDataManagerService<T = unknown> {
   private dataCenter: BehaviorSubject<T> = new BehaviorSubject<T>({} as T);
-  private localStorage: Array<{ key: StorageApiKeys, value: T }> = [];
-  private sessionStorage: Array<{ key: StorageApiKeys, value: T }> = [];
+  private localStorage: GenericStorageContent<T>[] = [];
+  private sessionStorage: GenericStorageContent<T>[] = [];
 
   constructor(
     private apiService: ApiHelperService,
@@ -26,7 +30,7 @@ export class ApiDataManagerService<T = unknown> {
     this.storageValidator();
   }
 
-  public initializeDataCenter(
+  public dataCenterListener(
     culture: string,
     domain: ApiDomains,
     storageKey: StorageApiKeys,
@@ -35,49 +39,52 @@ export class ApiDataManagerService<T = unknown> {
   ): void {
     const fullUrl: string = `${environment.restServer}/${domain}`;
     const apiKeyObjDomain = this.mapToApiKeyObjDomain(domain);
-    if (this.storageHasValueForKey(temporalData, storageKey)) {
-      const storageMethod = temporalData ? 'getSessionStorage' : 'getLocalStorage';
-      const currentStorage = this.storageHelper[storageMethod](storageKey);
+    const currentStorage = this.storageHasValueForKey(temporalData, storageKey)
+    console.log(culture)
+    console.log(currentStorage)
+    if (currentStorage && currentStorage[domain] && currentStorage[domain][culture]) {
       this.dataCenter.next(this.mapAsDomainInterface(currentStorage, domain));
     } else {
       this.apiService
-      .request<ApiDataManagerConfig>(HttpsRequests.GET, fullUrl, culture)
-      .subscribe(
-        (res) => {
-          if (createStorage) {
-            this.validateAndCreateStorage(
-              temporalData,
-              storageKey,
-              this.mapAsDomainInterface(res[apiKeyObjDomain], domain)
-            );
-          } else {
-            this.dataCenter.next(this.mapAsDomainInterface(res[apiKeyObjDomain], domain));
+        .request<ApiDataManagerConfig>(HttpsRequests.GET, fullUrl, culture)
+        .subscribe(
+          (res) => {
+            if (createStorage) {
+              this.createStorage(
+                temporalData,
+                storageKey,
+                culture,
+                this.mapAsDomainInterface(res[apiKeyObjDomain], domain)
+              );
+              this.setDataCenterFromStorage( 
+                temporalData,
+                storageKey,
+                domain,
+                this.dataCenter,
+                )
+            } else {
+              this.dataCenter.next(this.mapAsDomainInterface(res[apiKeyObjDomain], domain));
+            }
           }
-        }
-      );
-    }    
-  }
-
-  public validateAndCreateStorage(
-    temporalData: boolean,
-    storageKey: StorageApiKeys,
-    res: T
-  ) {
-
-    if (currentStorage === null || !this.objAreEqual(res, currentStorage)) {
-      this.createStorage(temporalData, storageKey, res);
-      this.dataCenter.next(res);
-    } else {
-      this.dataCenter.next(currentStorage);
+        );
     }
   }
-
-  private createStorage(temporalData: boolean, storageKey: StorageApiKeys, res: T) {
+ /* PEENDINNNIG */
+  private createStorage(
+    temporalData: boolean, 
+    storageKey: StorageApiKeys,
+    culture: string, 
+    res: T
+  ): void {
+    const cultureNodeRes = this.createCultureNode(culture, res);
+    const existingStorage = temporalData ? this.sessionStorage : this.localStorage;
+    let cultureNode = existingStorage.find(item => item.hasOwnProperty(storageKey));
+  
     const storageMethod = temporalData ? 'setSessionStorage' : 'setLocalStorage';
-    this.storageHelper[storageMethod](storageKey, res);
+    this.storageHelper[storageMethod](storageKey, existingStorage);
   }
 
-  public createCultureNode<T>(culture: string, res: T): GenericCultureNode<T> {
+  private createCultureNode<T>(culture: string, res: T): GenericCultureNode<T> {
     const cultureNode: GenericCultureNode<T> = {};
     cultureNode[culture] = res;
     return cultureNode;
@@ -86,13 +93,13 @@ export class ApiDataManagerService<T = unknown> {
   private storageHasValueForKey(
     temporalData: boolean,
     storageKey: StorageApiKeys,
-  ): any {
+  ): GenericStorageContent<T> | undefined {
     if (temporalData) {
-      const sessionItem = this.sessionStorage.find(item => item.key === storageKey);
-      return sessionItem
+      const sessionItem = this.sessionStorage.find(item => item.hasOwnProperty(storageKey));
+      return sessionItem as GenericStorageContent<T> | undefined;
     } else {
-      const localItem = this.localStorage.find(item => item.key === storageKey);
-      return localItem
+      const localItem = this.localStorage.find(item => item.hasOwnProperty(storageKey));
+      return localItem as GenericStorageContent<T> | undefined;
     }
   }
 
@@ -101,9 +108,27 @@ export class ApiDataManagerService<T = unknown> {
     storageKeys.forEach((key) => {
       const localRes = this.storageHelper.getLocalStorage(key);
       const sessionRes = this.storageHelper.getSessionStorage(key);
-      this.localStorage.push({ key, value: localRes });
-      this.sessionStorage.push({ key, value: sessionRes });
+      if (localRes) {
+        this.localStorage.push({ [key]: localRes });
+      }
+      if (sessionRes) {
+        this.sessionStorage.push({ [key]: sessionRes });
+      }
     })
+  }
+
+  private setDataCenterFromStorage(
+    temporalData: boolean,
+    storageKey: StorageApiKeys,
+    domain: ApiDomains,
+    dataCenter: BehaviorSubject<T>,
+    ): void {
+    const currentDataStorage = this.storageHasValueForKey(temporalData,storageKey);
+    dataCenter.next(this.mapAsDomainInterface(currentDataStorage, domain));
+  }
+
+  public getDataByCulture(culture: string): BehaviorSubject<T> {
+    return this.dataCenter;
   }
 
   public getData(): BehaviorSubject<T> {
@@ -146,9 +171,5 @@ export class ApiDataManagerService<T = unknown> {
       default:
         throw new Error(`Unhandled domain: ${apiDomain}`);
     }
-  }
-
-  private objAreEqual(obj: T, obj2: T): boolean {
-    return JSON.stringify(obj) === JSON.stringify(obj2);
   }
 }
