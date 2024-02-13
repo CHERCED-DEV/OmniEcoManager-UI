@@ -20,8 +20,8 @@ import { MembersApiConfig } from '../../types/interfaces/domains/membars.domian.
 @Injectable()
 export class ApiDataManagerService<T = unknown> {
   private dataCenter: BehaviorSubject<T> = new BehaviorSubject<T>({} as T);
-  private localStorage: GenericStorageContent<T>[] = [];
-  private sessionStorage: GenericStorageContent<T>[] = [];
+  private localStorage: GenericStorageContent<T> = {};
+  private sessionStorage: GenericStorageContent<T> = {};
 
   constructor(
     private apiService: ApiHelperService,
@@ -40,8 +40,6 @@ export class ApiDataManagerService<T = unknown> {
     const fullUrl: string = `${environment.restServer}/${domain}`;
     const apiKeyObjDomain = this.mapToApiKeyObjDomain(domain);
     const currentStorage = this.storageHasValueForKey(temporalData, storageKey)
-    console.log(culture)
-    console.log(currentStorage)
     if (currentStorage && currentStorage[domain] && currentStorage[domain][culture]) {
       this.dataCenter.next(this.mapAsDomainInterface(currentStorage, domain));
     } else {
@@ -53,15 +51,16 @@ export class ApiDataManagerService<T = unknown> {
               this.createStorage(
                 temporalData,
                 storageKey,
+                domain,
                 culture,
                 this.mapAsDomainInterface(res[apiKeyObjDomain], domain)
               );
-              this.setDataCenterFromStorage( 
+              this.setDataCenterFromStorage(
                 temporalData,
                 storageKey,
                 domain,
                 this.dataCenter,
-                )
+              )
             } else {
               this.dataCenter.next(this.mapAsDomainInterface(res[apiKeyObjDomain], domain));
             }
@@ -69,25 +68,29 @@ export class ApiDataManagerService<T = unknown> {
         );
     }
   }
- /* PEENDINNNIG */
+
   private createStorage(
-    temporalData: boolean, 
+    temporalData: boolean,
     storageKey: StorageApiKeys,
-    culture: string, 
+    domain: ApiDomains,
+    culture: string,
     res: T
   ): void {
-    const cultureNodeRes = this.createCultureNode(culture, res);
-    const existingStorage = temporalData ? this.sessionStorage : this.localStorage;
-    let cultureNode = existingStorage.find(item => item.hasOwnProperty(storageKey));
-  
     const storageMethod = temporalData ? 'setSessionStorage' : 'setLocalStorage';
-    this.storageHelper[storageMethod](storageKey, existingStorage);
-  }
+    const existingStorage = temporalData ? this.sessionStorage : this.localStorage;
 
-  private createCultureNode<T>(culture: string, res: T): GenericCultureNode<T> {
-    const cultureNode: GenericCultureNode<T> = {};
-    cultureNode[culture] = res;
-    return cultureNode;
+    const domainExists = Object.values(existingStorage).some(storageItem => storageItem.hasOwnProperty(storageKey));
+    const cultureExists = Object.values(domainExists).some(cultureItem => cultureItem.hasOwnProperty(culture));
+
+    if (!domainExists) {
+      existingStorage[domain] = {};
+    }
+
+    if (!cultureExists) {
+      existingStorage[domain][culture]= res;
+    }
+
+    this.storageHelper[storageMethod](storageKey, existingStorage);
   }
 
   private storageHasValueForKey(
@@ -95,10 +98,10 @@ export class ApiDataManagerService<T = unknown> {
     storageKey: StorageApiKeys,
   ): GenericStorageContent<T> | undefined {
     if (temporalData) {
-      const sessionItem = this.sessionStorage.find(item => item.hasOwnProperty(storageKey));
+      const sessionItem = Object.keys(this.sessionStorage).find(item => item.hasOwnProperty(storageKey));
       return sessionItem as GenericStorageContent<T> | undefined;
     } else {
-      const localItem = this.localStorage.find(item => item.hasOwnProperty(storageKey));
+      const localItem = Object.keys(this.localStorage).find(item => item.hasOwnProperty(storageKey));
       return localItem as GenericStorageContent<T> | undefined;
     }
   }
@@ -109,10 +112,10 @@ export class ApiDataManagerService<T = unknown> {
       const localRes = this.storageHelper.getLocalStorage(key);
       const sessionRes = this.storageHelper.getSessionStorage(key);
       if (localRes) {
-        this.localStorage.push({ [key]: localRes });
+        this.localStorage[key] = localRes;
       }
       if (sessionRes) {
-        this.sessionStorage.push({ [key]: sessionRes });
+        this.sessionStorage[key] = sessionRes;
       }
     })
   }
@@ -122,8 +125,8 @@ export class ApiDataManagerService<T = unknown> {
     storageKey: StorageApiKeys,
     domain: ApiDomains,
     dataCenter: BehaviorSubject<T>,
-    ): void {
-    const currentDataStorage = this.storageHasValueForKey(temporalData,storageKey);
+  ): void {
+    const currentDataStorage = this.storageHasValueForKey(temporalData, storageKey);
     dataCenter.next(this.mapAsDomainInterface(currentDataStorage, domain));
   }
 
