@@ -16,14 +16,6 @@ export enum KeyInputConfig {
   URL = 'INPUT_URL'
 }
 
-export enum HttpsRequests {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  DELETE = 'DELETE',
-  PATCH = 'PATCH',
-}
-
 type inputsRegexsConfig = {
   [key in KeyInputConfig]: string;
 }

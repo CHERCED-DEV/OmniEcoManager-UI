@@ -1,4 +1,4 @@
-import { CommonApiConfig } from "./common.interface";
+import { CommonApiConfig } from "../domains/common.interface";
 
 export interface ApiDataManagerConfig {
     common?: CommonApiConfig

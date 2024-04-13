@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
-import { HttpsRequests } from '../../types/enums/validation_types.enum';
+import { HttpsRequests } from '../../types/enums/helpers.enum';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 
 @Injectable({

@@ -8,9 +8,10 @@ import { StorageHelperService } from '../main/core/helpers/storage-helper/storag
 import { CultureService } from '../main/core/services/culture/culture.service';
 import { AviableCulturesConfig } from '../main/core/types/enums/cultures.enum';
 import { ApiDomains } from '../main/core/types/enums/domains.enum';
-import { GenericStorageContent, StorageApiKeys, StorageServiceKey } from '../main/core/types/enums/storage.keys.enum';
+import { StorageApiKeys, StorageServiceKey } from '../main/core/types/enums/storage.keys.enum';
+import { GenericStorageContent } from '../main/core/types/interfaces/core/storage-data-types.interface';
 import { CommonApiConfig, FooterConfig, HeaderConfig } from '../main/core/types/interfaces/domains/common.interface';
-import { CultureSessionConfig } from '../main/core/types/interfaces/shared/culture.interface';
+import { CultureSessionConfig } from '../main/core/types/interfaces/core/culture.interface';
 import { SharedModule } from '../main/shared/shared.module';
 import { ApiHelperService } from '../main/core/helpers/api-helper/api-helper.service';
 
@@ -42,7 +43,7 @@ export class AppComponent {
   public header!: HeaderConfig;
   public footer!: FooterConfig;
 
-  private commonDataCenterService: ApiDataManagerService<GenericStorageContent<CommonApiConfig>>;
+  private commonDataCenterService: ApiDataManagerService<CommonApiConfig>;
   private temporalData: boolean = false;
 
   constructor(
@@ -51,13 +52,13 @@ export class AppComponent {
     private apiHelperService: ApiHelperService,
   ) {
     this.createCulture();
-    this.commonDataCenterService = new ApiDataManagerService<GenericStorageContent<CommonApiConfig>>(apiHelperService, storageHelperService);
+    this.commonDataCenterService = new ApiDataManagerService<CommonApiConfig>(apiHelperService, storageHelperService, cultureService);
   }
 
   ngOnInit(): void {
     this.cultureService.cultureListener().subscribe(
       (currentLang) => {
-        if (currentLang !== null && currentLang !== undefined && currentLang !== '') {
+        if (currentLang) {
           this.commonDataCenterService.dataCenterListener(
             currentLang,
             ApiDomains.COMMON,
@@ -65,10 +66,9 @@ export class AppComponent {
             this.temporalData
           )
         }
-        this.layoutDataBinding(currentLang, ApiDomains.COMMON);
       }
     )
-    
+    this.layoutDataBinding();
   }
 
   private createCulture() {
@@ -83,12 +83,14 @@ export class AppComponent {
     return cultureStorage
   }
 
-  private layoutDataBinding(culture: string, domain: ApiDomains) {
+  private layoutDataBinding() {
     this.commonDataCenterService.getData().subscribe(
-      (data) => {      
-        console.log(data) 
-        /* this.header = data[domain][culture].layout.header,
-        this.footer = data[domain][culture].layout.footer */
+      (data) => {
+        console.log(data)
+        console.log(data.layout)
+        console.log(data.layout.header)
+        this.header = data.layout.header,
+        this.footer = data.layout.footer
       }
     )
   }
