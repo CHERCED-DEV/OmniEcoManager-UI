@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '../main/common/layout/layout.module';
@@ -24,7 +24,7 @@ import { ApiHelperService } from '../main/core/helpers/api-helper/api-helper.ser
     TranslateModule,
     LayoutModule,
     SharedModule],
-  providers: [ApiHelperService, ApiDataManagerService, CultureService],
+  providers: [ApiHelperService, CultureService],
   template: `
   <div class="page-wrap">
     <app-header
@@ -37,38 +37,40 @@ import { ApiHelperService } from '../main/core/helpers/api-helper/api-helper.ser
     </app-footer>
   </div>`
 })
-export class AppComponent {
+export class AppComponent extends ApiDataManagerService<CommonApiConfig> implements OnInit {
   private cultureInit!: CultureSessionConfig;
 
   public header!: HeaderConfig;
   public footer!: FooterConfig;
 
-  private commonDataCenterService: ApiDataManagerService<CommonApiConfig>;
-  private temporalData: boolean = false;
-
   constructor(
-    private cultureService: CultureService,
-    private storageHelperService: StorageHelperService,
-    private apiHelperService: ApiHelperService,
+    protected cultureService: CultureService,
+    protected storageHelperService: StorageHelperService,
+    protected apiHelperService: ApiHelperService,
   ) {
-    this.createCulture();
-    this.commonDataCenterService = new ApiDataManagerService<CommonApiConfig>(apiHelperService, storageHelperService, cultureService);
+    super(apiHelperService, storageHelperService);
   }
 
   ngOnInit(): void {
+    this.internalInit();
+    this.layoutDataBinding();
+  }
+
+  private internalInit() {
+    this.createCulture();
+    this.storageValidator(this.cultureService.getLang());
     this.cultureService.cultureListener().subscribe(
       (currentLang) => {
         if (currentLang) {
-          this.commonDataCenterService.dataCenterListener(
+          this.dataCenterListener(
             currentLang,
             ApiDomains.COMMON,
             StorageApiKeys.COMMON,
-            this.temporalData
-          )
+            false
+            )
         }
       }
     )
-    this.layoutDataBinding();
   }
 
   private createCulture() {
@@ -84,13 +86,10 @@ export class AppComponent {
   }
 
   private layoutDataBinding() {
-    this.commonDataCenterService.getData().subscribe(
-      (data) => {
-        console.log(data)
-        console.log(data.layout)
-        console.log(data.layout.header)
-        this.header = data.layout.header,
-        this.footer = data.layout.footer
+    this.getData().subscribe(
+      (common) => {
+        this.header = common.layout.header,
+        this.footer = common.layout.footer
       }
     )
   }

@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { ApiHelperService } from '../../helpers/api-helper/api-helper.service';
 import { StorageHelperService } from '../../helpers/storage-helper/storage-helper.service';
-import { CultureService } from '../../services/culture/culture.service';
 import { ApiDomains } from '../../types/enums/domains.enum';
 import { HttpsRequests } from '../../types/enums/helpers.enum';
 import {
@@ -13,18 +12,15 @@ import { ApiDataManagerConfig } from '../../types/interfaces/core/api-data-manag
 import { GenericData } from '../../types/interfaces/core/helpers-data-types.interface';
 
 @Injectable()
-export class ApiDataManagerService<T = unknown> {
+export abstract class ApiDataManagerService<T> {
   private dataCenter: BehaviorSubject<T> = new BehaviorSubject<T>({} as T);
   private localStorage: GenericData<T> = {};
   private sessionStorage: GenericData<T> = {};
 
   constructor(
-    private apiService: ApiHelperService,
-    private storageHelper: StorageHelperService,
-    private cultureService: CultureService
-  ) {
-    this.storageValidator(this.cultureService.getLang());
-  }
+    protected apiService: ApiHelperService,
+    protected storageHelper: StorageHelperService,
+  ) {}
 
   public dataCenterListener(
     culture: string,
@@ -99,7 +95,7 @@ export class ApiDataManagerService<T = unknown> {
     }
   }
 
-  private storageValidator(culture: string): void {
+  protected storageValidator(culture: string): void {
     const storageCultureKeys: string[] = Object.values(culture);
     storageCultureKeys.forEach((key) => {
       const localRes = this.storageHelper.getLocalStorage(key);
@@ -126,8 +122,8 @@ export class ApiDataManagerService<T = unknown> {
     return this.dataCenter;
   }
 
-  public getData(): BehaviorSubject<T> {
-    return this.dataCenter;
+  public getData(): Observable<T> {
+    return this.dataCenter.asObservable();
   }
 
   public clearData(): void {
